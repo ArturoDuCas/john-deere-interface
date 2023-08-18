@@ -1,11 +1,13 @@
-import BeforeSimulationPage from "./components/BeforeSimulationPage.jsx";
+import React from 'react'
+import { AppContextProvider } from "./context/AppContext.jsx";
+import Routes from "./routes/Routes.jsx";
 
 function App() {
 
   return (
-    <div >
-      <BeforeSimulationPage />
-    </div>
+    <AppContextProvider >
+      <Routes/>
+    </AppContextProvider>
   )
 }
 
