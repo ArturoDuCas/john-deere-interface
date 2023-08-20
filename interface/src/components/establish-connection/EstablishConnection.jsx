@@ -1,12 +1,24 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AppContext } from "../../context/AppContext.jsx";
 
 export default function EstablishConnection() {
-  const [id, setId] = useState("");
+  const [unityId, setUnityId] = useState("");
+  const { ws, id } = useContext(AppContext);
 
   function handleSubmit(e) {
     e.preventDefault();
-    console.log(id);
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        type: "connect",
+        sender: id,
+        receiver: unityId,
+        data: unityId,
+      }));
+    } else {
+      console.log("WebSocket connection not ready.");
+    }
   }
+
   return (
     <div className="h-screen">
       <header className="bg-green-500 p-4 border-b-2 h-1/6 flex items-center">
@@ -21,8 +33,8 @@ export default function EstablishConnection() {
             <label className="block text-base mb-1">ID de conexión</label>
             <input
               className="border-2 border-gray-300 rounded p-1 w-full"
-              value={id}
-              onChange={(e) => setId(e.target.value)}
+              value={unityId}
+              onChange={(e) => setUnityId(e.target.value)}
               type="text"
               placeholder="12345"
             />

@@ -4,10 +4,15 @@ export const AppContext = createContext({});
 
 export function AppContextProvider({children}) {
   const [step, setStep] = useState(0); // 0: establish connection, 1: before simulation, 2: during simulation, 3: after simulation
+  const [id, setId] = useState(null);
   const [ws, setWs] = useState(null);
 
   function handleMessage(ev) {
-    console.log("message received", ev);
+    const data = JSON.parse(ev.data);
+    console.log(data);
+    if (data.type === "connection_info") {
+      setId(data.data);
+    }
   }
 
   useEffect(() => {
@@ -24,6 +29,8 @@ export function AppContextProvider({children}) {
         setStep,
         ws,
         setWs,
+        id,
+        setId,
       }}
     >
       {children}
