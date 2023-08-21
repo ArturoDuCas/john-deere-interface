@@ -31,6 +31,13 @@ function setConnection(message) {
   });
 }
 
+function sendMessage(message) {
+  wss.clients.forEach((client) => {
+    if(client.id === connectionPairs[message.sender]) {
+      client.send(JSON.stringify(message));
+    }
+  });
+}
 
 
 wss.on("connection", (connection, req) => {
@@ -52,6 +59,9 @@ wss.on("connection", (connection, req) => {
     const message = JSON.parse(data);
     if(message.type === "connect") {
       setConnection(message);
+    }
+    if(message.type === "field-dimensions") {
+      sendMessage(message);
     }
   });
 });

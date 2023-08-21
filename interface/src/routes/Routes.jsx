@@ -10,18 +10,23 @@ export default function Routes() {
   console.log(step);
 
   return(
-    <>
-      {step === 0 ?
-        <EstablishConnection />
-      : step === 1 ?
-        <BeforeSimulationPage />
-      : step === 2 ?
-        <DuringSimulationPage />
-      : step === 3 ?
-        <AfterSimulationPage />
-      :
-        null
-      }
-    </>
+    <div className="h-screen">
+      <header className="bg-green-500 p-4 border-b-2 h-1/6 flex items-center">
+        <h1 className="text-2xl text-white">John Deere</h1>
+      </header>
+      <div className="h-5/6">
+        {step === 0 ?
+          <EstablishConnection />
+        : step === 1 ?
+          <BeforeSimulationPage />
+        : step === 2 ?
+          <DuringSimulationPage />
+        : step === 3 ?
+          <AfterSimulationPage />
+        :
+          null
+        }
+    </div>
+    </div>
   );
 }

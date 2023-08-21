@@ -1,9 +1,9 @@
 import { useState, useContext } from "react";
 import { AppContext } from "../../context/AppContext.jsx";
 
+
 export default function EstablishConnection() {
-  const [unityId, setUnityId] = useState("");
-  const { ws, id } = useContext(AppContext);
+  const { ws, id, unityId, setUnityId } = useContext(AppContext);
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -20,12 +20,7 @@ export default function EstablishConnection() {
   }
 
   return (
-    <div className="h-screen">
-      <header className="bg-green-500 p-4 border-b-2 h-1/6 flex items-center">
-        <h1 className="text-2xl text-white">John Deere</h1>
-      </header>
-
-      <div className="flex flex-col justify-center items-center bg-white h-5/6 ">
+      <div className="flex flex-col justify-center items-center bg-white h-full">
         <div className="w-1/4 bg-gray-50 rounded shadow p-6 flex items-center mb-6">
           <form
             onSubmit={handleSubmit}
@@ -48,7 +43,6 @@ export default function EstablishConnection() {
           </form>
         </div>
       </div>
-    </div>
 
 
   )
