@@ -23,9 +23,9 @@ export default function Routes() {
       </header>
       <div className="h-5/6">
         {step === 0 ?
-          <BeforeSimulationPage />
+          <EstablishConnection />
           : step === 1 ?
-            <EstablishConnection />
+            <BeforeSimulationPage />
             : step === 2 ?
               <DuringSimulationPage />
               : step === 3 ?

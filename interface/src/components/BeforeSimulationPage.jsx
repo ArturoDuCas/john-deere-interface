@@ -12,6 +12,7 @@ export default function BeforeSimulationPage() {
 
   function handleSubmit(e) {
     e.preventDefault();
+
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
         type: "field-dimensions",

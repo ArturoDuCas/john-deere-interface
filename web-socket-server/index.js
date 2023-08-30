@@ -10,7 +10,7 @@ function setConnection(message) {
 
   // Check if the receiver exists
   wss.clients.forEach((client) => {
-    if(client.id === message.receiver) {
+    if (client.id === message.receiver) {
       connectionPairs[message.sender] = client.id;
       connectionPairs[client.id] = message.sender;
       client.send(JSON.stringify(message));
@@ -20,7 +20,7 @@ function setConnection(message) {
 
   // Let the sender know if the connection was successful
   wss.clients.forEach((client) => {
-    if(client.id === message.sender) {
+    if (client.id === message.sender) {
       client.send(JSON.stringify({
         type: "connected",
         sender: "server",
@@ -33,7 +33,7 @@ function setConnection(message) {
 
 function sendMessage(message) {
   wss.clients.forEach((client) => {
-    if(client.id === connectionPairs[message.sender]) {
+    if (client.id === connectionPairs[message.sender]) {
       client.send(JSON.stringify(message));
     }
   });
@@ -57,14 +57,19 @@ wss.on("connection", (connection, req) => {
 
   connection.on("message", (data) => {
     const message = JSON.parse(data);
-    if(message.type === "connect") {
+    if (message.type === "connect") {
       setConnection(message);
     }
-    if(message.type === "field-dimensions") {
+    if (message.type === "field-dimensions") {
       sendMessage(message);
+    }
+
+    if (message.type === "gas_capacity") {
+      console.log("Gasolina restante: ", message.data)
     }
   });
 });
+
 wss.on("listening", () => {
   console.log("Server is listening on port 8080");
 })
