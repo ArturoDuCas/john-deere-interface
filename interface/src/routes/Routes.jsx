@@ -25,9 +25,9 @@ export default function Routes() {
         {step === 0 ?
           <EstablishConnection />
           : step === 1 ?
-            <BeforeSimulationPage />
+            <DuringSimulationPage />
             : step === 2 ?
-              <DuringSimulationPage />
+              <BeforeSimulationPage />
               : step === 3 ?
                 <AfterSimulationPage />
                 :

@@ -67,9 +67,28 @@ wss.on("connection", (connection, req) => {
     if (message.type === "gas_capacity") {
       console.log("Gasolina restante: ", message.data)
     }
+
+    if (message.type === "harvester_speed") {
+      console.log("Velocidad de harvester: ", message.data);
+    }
+
   });
 });
 
 wss.on("listening", () => {
   console.log("Server is listening on port 8080");
 })
+
+// In your Node.js server
+function sendDataToReactComponent(data) {
+  // Send the data to the React component
+  const message = {
+    type: 'your_message_type', // Customize this
+    data: data,
+  };
+  wss.clients.forEach((client) => {
+    if (client.id === 'your_receiver_id') { // Customize this
+      client.send(JSON.stringify(message));
+    }
+  });
+}
