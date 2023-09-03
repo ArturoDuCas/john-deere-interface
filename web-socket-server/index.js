@@ -72,6 +72,12 @@ wss.on("connection", (connection, req) => {
       console.log("Velocidad de harvester: ", message.data);
     }
 
+    const parsedMessage = JSON.parse(message);
+
+    if (parsedMessage.type === "field_matrix") {
+      console.log(parsedMessage.data);
+    }
+
   });
 });
 
