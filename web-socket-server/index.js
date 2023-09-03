@@ -72,11 +72,31 @@ wss.on("connection", (connection, req) => {
       console.log("Velocidad de harvester: ", message.data);
     }
 
-    const parsedMessage = JSON.parse(message);
+    if (message.type === "field_matrix") {
+      try {
+        console.log("Received field matrix data:", message.data); // Add this line
 
-    if (parsedMessage.type === "field_matrix") {
-      console.log(parsedMessage.data);
+        const fieldMatrix = JSON.parse(message.data);
+
+        // Now 'fieldMatrix' should be a 2D array in JavaScript
+        console.log("Parsed field matrix:", fieldMatrix);
+
+        // Send a response to acknowledge the receipt
+        const responseMessage = {
+          type: "field_matrix_received",
+          sender: "server",
+          receiver: message.sender,
+          data: "Field matrix received successfully"
+        };
+
+        sendMessage(responseMessage);
+      } catch (error) {
+        console.error("Error parsing field matrix:", error);
+
+        // Handle the parsing error here, e.g., send an error response back to Unity
+      }
     }
+
 
   });
 });
