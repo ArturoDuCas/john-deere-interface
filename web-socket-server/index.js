@@ -74,6 +74,23 @@ wss.on("connection", (connection, req) => {
 
     if (message.type === "field_matrix") {
       console.log("matrix", message.data);
+
+      // Pass the field_matrix data to the Python script here
+      const { spawn } = require("child_process");
+      const pythonProcess = spawn("python", ["Harvester.py", JSON.stringify(message.data)]);
+
+      pythonProcess.stdout.on("data", (data) => {
+        // Handle the output from the Python script
+        const pythonResult = data.toString();
+        console.log("Python script result:", pythonResult);
+
+        // Send the result to the React component if needed
+        sendDataToReactComponent(pythonResult);
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+        console.error(`Error from Python script: ${data}`);
+      });
     }
 
 

@@ -1,6 +1,8 @@
 import numpy as np
 import heapq
 import random
+import sys
+import json
 
 def shortest_path(matrix, start, end):
     """
@@ -112,25 +114,45 @@ def tsp(matrix):
     
     return min_distance, [points[i] for i in best_order], path
 
-matrix = [
-    [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-]
+# matrix = [
+#     [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+#     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# ]
 
-min_distance, best_order, path = tsp(matrix)
-print("Minimum distance:", min_distance)
-print("Best order:", best_order)
-print("Path:", path)
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: python python_script.py field_matrix_json")
+        sys.exit(1)
+
+    field_matrix_json = sys.argv[1]
+    field_matrix = json.loads(field_matrix_json)
+
+    min_distance, best_order, path = tsp(field_matrix)
+    result = {
+        "minimum_distance": min_distance,
+        "best_order": best_order,
+        "path": path
+    }
+
+    print(json.dumps(result))
+
+if __name__ == "__main__":
+    main()
+
+# min_distance, best_order, path = tsp(matrix)
+# print("Minimum distance:", min_distance)
+# print("Best order:", best_order)
+# print("Path:", path)
