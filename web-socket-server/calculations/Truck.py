@@ -1,31 +1,44 @@
 #libraries
 import numpy as np
+import sys
+import json
+
+try:
+    harvester_ID = sys.argv[1]
+    print(harvester_ID)
+
+    final_Pos = sys.argv[2]
+    final_Pos = json.loads(final_Pos)
+
+    fieldMatrix = sys.argv[3]
+    fieldMatrix = json.loads(fieldMatrix)
+
+    trucksInitialPos = sys.argv[4]
+    trucksInitialPos = json.loads(trucksInitialPos)
+
+except json.JSONDecodeError:
+    print('Invalid JSON syntax')
 
 #initialization
-
-rewards = np.array([
-    [2, 2, 2, 2, 2],
-    [2, 2, 2, 2, 2],
-    [2, 2, 2, 2, 2],
-    [2, 2, 5, 0, 0],
-    [0, 0, 0, 0, 0]
-])
+rewards = fieldMatrix
+rewards[final_Pos[0]][final_Pos[1]] = 5
 
 # Change values
-for i in range(rewards.shape[0]):
-    for j in range(rewards.shape[1]):
-        if rewards[i, j] == 2:
-            rewards[i, j] = -100
-        elif rewards[i, j] == 5:
-            rewards[i, j] = 100
-        elif rewards[i, j] == 0:
-            rewards[i, j] = -1
+for i in range(len(rewards)):
+    for j in range(len(rewards[i])):
+        if rewards[i][j] == 1 or rewards[i][j] == 2:
+            rewards[i][j] = -100
+        elif rewards[i][j] == 5:
+            rewards[i][j] = 100
+        elif rewards[i][j] == 0:
+            rewards[i][j] = -1
 
 # Print modified rewards matrix
 for row in rewards:
     print(row)
 
-environment_rows, environment_columns = rewards.shape
+environment_rows = len(rewards)
+environment_columns = len(rewards[0]) 
 
 q_values = np.zeros((environment_rows, environment_columns, 4))
 
@@ -35,8 +48,9 @@ actions = ['up', 'right', 'down', 'left']
 
 #define a function that determines if the specified location is a terminal state
 def is_terminal_state(current_row_index, current_column_index):
+
   #if the reward for this location is -1, then it is not a terminal state (i.e., it is a 'white square')
-  if rewards[current_row_index, current_column_index] == -1.:
+  if rewards[current_row_index][current_column_index] == -1 or rewards[current_row_index][current_column_index] == 2 :
     return False
   else:
     return True
@@ -78,11 +92,14 @@ def get_next_location(current_row_index, current_column_index, action_index):
 
 #Define a function that will get the shortest path between any location within the warehouse that
 #the robot is allowed to travel and the item packaging location.
+
 def get_shortest_path(start_row_index, start_column_index):
+
   #return immediately if this is an invalid starting location
   if is_terminal_state(start_row_index, start_column_index):
     return []
   else: #if this is a 'legal' starting location
+
     current_row_index, current_column_index = start_row_index, start_column_index
     shortest_path = []
     shortest_path.append([current_row_index, current_column_index])
@@ -117,7 +134,7 @@ for episode in range(1000):
     row_index, column_index = get_next_location(row_index, column_index, action_index)
 
     #receive the reward for moving to the new state, and calculate the temporal difference
-    reward = rewards[row_index, column_index]
+    reward = rewards[row_index][column_index]
     old_q_value = q_values[old_row_index, old_column_index, action_index]
     temporal_difference = reward + (discount_factor * np.max(q_values[row_index, column_index])) - old_q_value
 
@@ -127,4 +144,7 @@ for episode in range(1000):
 
 print('Training complete')
 
-print(get_shortest_path(4, 4))
+for starting_point in trucksInitialPos:
+    row, column = starting_point
+    shortest_path = get_shortest_path(row, column)
+    print(f"Shortest path from {starting_point} to harvester: {shortest_path}")

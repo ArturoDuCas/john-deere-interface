@@ -57,7 +57,7 @@ wss.on("connection", (connection, req) => {
 
   connection.on("message", (data) => {
     const message = JSON.parse(data);
-    console.log(message);
+    //console.log(message);
     if (message.type === "connect") {
       setConnection(message);
     }
@@ -69,7 +69,7 @@ wss.on("connection", (connection, req) => {
     }
 
     if (message.type === "gas_capacity") {
-      console.log("Gasolina restante: ", message.data)
+      //console.log("Gasolina restante: ", message.data)
     }
 
     if (message.type === "harvester_speed") {
@@ -101,6 +101,30 @@ wss.on("connection", (connection, req) => {
       pythonProcess.stderr.on("data", (data) => {
         console.error(`Error from Python script: ${data}`);
       });
+    }
+
+
+    if (message.type === "harvester_unload_request") {
+
+      console.log("Entra a la funcion")
+
+      // Pass the field_matrix data to the Python script here
+      const { spawn } = require("child_process");
+      const pythonProcess = spawn("python3", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos]);
+
+      pythonProcess.stdout.on("data", (data) => {
+        // Handle the output from the Python script
+        const pythonResult = data.toString();
+        console.log("Python script result:", pythonResult);
+
+        // Send the result to the React component if needed
+        sendDataToReactComponent(pythonResult);
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+        console.error(`Error from Python script: ${data}`);
+      });
+
     }
 
 
