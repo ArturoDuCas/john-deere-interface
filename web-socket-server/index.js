@@ -83,11 +83,11 @@ wss.on("connection", (connection, req) => {
     }
 
     if (message.type === "starting_harvester_data") {
-      console.log("info", message.data);
+      console.log("starting_harvester_data: ", message);
 
       // Pass the field_matrix data to the Python script here
       const { spawn } = require("child_process");
-      const pythonProcess = spawn("python3", ["./calculations/NewHarvester.py", JSON.stringify(message.data)]);
+      const pythonProcess = spawn("python3", ["./calculations/NewHarvester.py", message.startingPoints, message.fieldMatrix]);
 
       pythonProcess.stdout.on("data", (data) => {
         // Handle the output from the Python script

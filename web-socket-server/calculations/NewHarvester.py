@@ -12,7 +12,7 @@ import numpy as np
 import heapq
 import random
 
-def shortest_path(matrix, start, end):
+def shortest_path(matrix, start_point):
     """
     Find the shortest path between start and end points in a binary matrix using Dijkstra's algorithm.
     
@@ -77,6 +77,8 @@ def shortest_path(matrix, start, end):
     return float('inf'), []  # If no path is found
 
 def tsp(matrix, start_point):
+    print("entra a la fuction TSP")
+
     points = [(i, j) for i in range(len(matrix)) for j in range(len(matrix[0])) if matrix[i][j] == 1]
     num_points = len(points)
     distance_matrix = [[0] * num_points for _ in range(num_points)]
@@ -86,8 +88,14 @@ def tsp(matrix, start_point):
             distance, _ = shortest_path(matrix, points[i], points[j])
             distance_matrix[i][j] = distance_matrix[j][i] = distance
     
-    start_index = points.index(start_point)
+    start_point = tuple(start_point)
     
+    start_index = None
+    for i, point in enumerate(points):
+        if point == start_point:
+            start_index = i
+            break
+
     visited = [False] * num_points
     visited[start_index] = True
     current_distance = 0
@@ -165,26 +173,6 @@ def nearest_1(matrix, point):
                     
     return nearest_point, min_distance
 
-# Sample matrix
-# matrix = [
-#     [1, 1, 0, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-#     [1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-# ]
-
-
 def main():
 
     if len(sys.argv) < 2:
@@ -192,45 +180,70 @@ def main():
         sys.exit(1)
 
     try:
-        input_json = sys.argv[1]
+        starting_points = sys.argv[1]
 
-        print(input_json)
+        # Remove double quotes from the input JSON string
+        starting_points = starting_points.replace('"', '')
         
+        # Remove backslashes from the JSON string
+        starting_points = starting_points.replace('\\', '')
+        starting_points = starting_points.replace('Data', '"Data"')
+
+        # Parse the JSON
+        new_points_dic = json.loads(starting_points)
+        new_starting_points = new_points_dic.get('Data',[])
+
+
+        field_matrix = sys.argv[2]
+        
+        field_matrix = field_matrix.replace('"', '')
+        
+        # Remove backslashes from the JSON string
+        field_matrix = field_matrix.replace('\\', '')
+        field_matrix = field_matrix.replace('Data', '"Data"')
+
+        # Parse the JSON
+        field_matrix = json.loads(field_matrix)
+        matrix = new_points_dic.get('Data',[])
+
 
     except json.JSONDecodeError:
         print('Invalid JSON syntax')
 
-    num_objects = 2
+    num_objects = len(new_starting_points)
 
     # Split the matrix for each object
-    # object_matrices = split_matrix_for_objects(matrix, num_objects)
+    object_matrices = split_matrix_for_objects(matrix, num_objects)
 
-    # object_paths = []
-    # object_best_orders = []
-    # object_distances = []
+    object_paths = []
+    object_best_orders = []
+    object_distances = []
 
     # For each object matrix, calculate the TSP path, order and distance
-    # for obj_matrix in object_matrices:
-    #     dist, order, path = tsp(obj_matrix)
-    #     object_distances.append(dist)
-    #     object_best_orders.append(order)
-    #     object_paths.append(path)
+    for obj_matrix, starting_point_list in zip(object_matrices, new_starting_points):
+        # Convert the list to a tuple here
+        starting_point = tuple(starting_point_list)
+        print("aqui", starting_point)
+        dist, order, path = tsp(obj_matrix, starting_point)
+        object_distances.append(dist)
+        object_best_orders.append(order)
+        object_paths.append(path)
 
     # For each object, calculate the nearest point in every other object's matrix 
     # and update the paths and distances accordingly
-    # for i in range(num_objects):
-    #     for j in range(num_objects):
-    #         if i != j and object_distances[j] > 0:
-    #             nearest_point, _ = nearest_1(object_matrices[j], object_paths[i][-1])
-    #             if nearest_point:
-    #                 distance, path = shortest_path(matrix, object_paths[i][-1], nearest_point)
-    #                 object_paths[i] += path[1:]
-    #                 object_distances[i] += distance
+    for i in range(num_objects):
+        for j in range(num_objects):
+            if i != j and object_distances[j] > 0:
+                nearest_point, _ = nearest_1(object_matrices[j], object_paths[i][-1])
+                if nearest_point:
+                    distance, path = shortest_path(matrix, object_paths[i][-1], nearest_point)
+                    object_paths[i] += path[1:]
+                    object_distances[i] += distance
 
-    # for i in range(num_objects):
-    #     print(f"Object {i+1} Path:", object_paths[i])
-    #     print(f"Object {i+1} Total Distance:", object_distances[i])
-    #     print(f"Object {i+1} Best Order:", object_best_orders[i])
+    for i in range(num_objects):
+        print(f"Object {i+1} Path:", object_paths[i])
+        print(f"Object {i+1} Total Distance:", object_distances[i])
+        print(f"Object {i+1} Best Order:", object_best_orders[i])
 
 
 if __name__ == "__main__":
