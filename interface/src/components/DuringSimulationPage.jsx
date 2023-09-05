@@ -101,75 +101,101 @@ const DuringSimulationPage = () => {
 
   const maxSliderValue = Math.min(fieldDimensions/6, 10);
 
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        type: "field-dimensions",
+        sender: id,
+        receiver: unityId,
+        data: `x:${x},z:${z}`,
+      }));
+    } else {
+      console.log("WebSocket connection not ready.");
+    }
+  }
   
   return (
    
-    <div>
-    {/* Display field dimensions if available */}
-    <p style={texto}>Field Dimensions: {fieldDimensions}</p>
-    <div style={sliderContainerStyles}>
-   
-       <Box sx={{ width: 300 }}>
-      <Slider
-        min={10}
-        max = {100}
-        step ={6}
-        id="mySlider1"
-        value={fieldDimensions}
-        onChange={(e) => setFieldDimensions(e.target.value)}
-        color="success" 
-      />
-    </Box>
+    <form action="" onSubmit={handleSubmit}>
 
-    </div>
 
-    {/* Display gas capacity if available */}
-    <p style={texto}>Gas Capacity: {gasCapacity}</p>
-    <div style={sliderContainerStyles}>
-    <Box sx={{ width: 300 }}>
-      <Slider
-        step ={50}
-        min ={100}
-        max={1000}
-        id="mySlider2"
-        value={gasCapacity}
-        onChange={(e) => setGasCapacity(e.target.value)}
-        color="success" 
-      />
-    </Box>
-    </div>
+        <div>
+        {/* Display field dimensions if available */}
+        <p style={texto}>Field Dimensions: {fieldDimensions}</p>
+        <div style={sliderContainerStyles}>
+      
+          <Box sx={{ width: 300 }}>
+          <Slider
+            min={10}
+            max = {100}
+            step ={6}
+            id="mySlider1"
+            value={fieldDimensions}
+            onChange={(e) => setFieldDimensions(e.target.value)}
+            color="success" 
+          />
+        </Box>
 
-    {/* Display harvester speed if available */}
-    <p style={texto}>Harvester Speed: {harvesterSpeed}</p>
-    <div style={sliderContainerStyles}>
-    <Box sx={{ width: 300 }}>
-      <Slider
-        step ={10}
-        id="mySlider3"
-        value={harvesterSpeed}
-        onChange={(e) => setHarvesterSpeed(e.target.value)}
-        color="success" 
-      />
-    </Box>
-    </div>
+        </div>
 
-    {/* Display harvester quantity if available */}
-    <p style={texto}>Harvester Number: {harvesterNumber}</p>
-    <div style={sliderContainerStyles}>
-    <Box sx={{ width: 300 }}>
-      <Slider
-        
-        min ={1}
-        max={maxSliderValue}
-        step ={1}
-        id="mySlider4"
-        value={harvesterNumber}
-        onChange={(e) => setHarvesterNumber(e.target.value)}
-        color="success" 
-      />
-    </Box>
-    </div>
-  </div>
+        {/* Display gas capacity if available */}
+        <p style={texto}>Gas Capacity: {gasCapacity}</p>
+        <div style={sliderContainerStyles}>
+        <Box sx={{ width: 300 }}>
+          <Slider
+            step ={50}
+            min ={100}
+            max={1000}
+            id="mySlider2"
+            value={gasCapacity}
+            onChange={(e) => setGasCapacity(e.target.value)}
+            color="success" 
+          />
+        </Box>
+        </div>
+
+        {/* Display harvester speed if available */}
+        <p style={texto}>Harvester Speed: {harvesterSpeed}</p>
+        <div style={sliderContainerStyles}>
+        <Box sx={{ width: 300 }}>
+          <Slider
+            step ={10}
+            id="mySlider3"
+            value={harvesterSpeed}
+            onChange={(e) => setHarvesterSpeed(e.target.value)}
+            color="success" 
+          />
+        </Box>
+        </div>
+
+        {/* Display harvester quantity if available */}
+        <p style={texto}>Harvester Number: {harvesterNumber}</p>
+        <div style={sliderContainerStyles}>
+        <Box sx={{ width: 300 }}>
+          <Slider
+            
+            min ={1}
+            max={maxSliderValue}
+            step ={1}
+            id="mySlider4"
+            value={harvesterNumber}
+            onChange={(e) => setHarvesterNumber(e.target.value)}
+            color="success" 
+          />
+        </Box>
+        </div>
+        <div className="w-full flex justify-center mt-4">
+              <button
+                className="bg-[#20720D] text-white rounded p-1 mt-4 w-1/2 hover:bg-[#86ab7d]"
+                type="submit"
+              >
+                Iniciar simulación
+              </button>
+            </div>
+      </div>
+    </form>
   );
 }
 
