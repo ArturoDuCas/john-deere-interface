@@ -57,7 +57,7 @@ wss.on("connection", (connection, req) => {
 
   connection.on("message", (data) => {
     const message = JSON.parse(data);
-    console.log(message.type);
+    console.log(message);
     if (message.type === "connect") {
       setConnection(message);
     }
