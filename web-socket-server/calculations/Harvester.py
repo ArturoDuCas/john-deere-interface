@@ -4,6 +4,8 @@ import random
 import sys
 import json
 
+data_dict = None  # Initialize data_dict
+
 def shortest_path(matrix, start, end):
     """
     This function finds the shortest path between two points in a matrix.
@@ -133,24 +135,42 @@ def tsp(matrix):
 # ]
 
 def main():
+
     if len(sys.argv) < 2:
         print("Usage: python python_script.py field_matrix_json")
         sys.exit(1)
 
-    field_matrix_json = sys.argv[1]
-    field_matrix = json.loads(field_matrix_json)
+    try:
+        input_json = sys.argv[1]
+        
+        # Remove double quotes from the input JSON string
+        new_json = input_json.replace('"', '')
+        
+        # Remove backslashes from the JSON string
+        field_matrix = new_json.replace('\\', '')
+        new_field = field_matrix.replace('Data', '"Data"')
 
-    min_distance, best_order, path = tsp(field_matrix)
+        # Parse the JSON
+        data_dict = json.loads(new_field)
+        
+    except json.JSONDecodeError:
+        print('Invalid JSON syntax')
+
+    #print(data_dict.get('Data',[]))
+
+    min_distance, best_order, path = tsp(data_dict.get('Data',[]))
     result = {
         "minimum_distance": min_distance,
         "best_order": best_order,
         "path": path
     }
 
-    print(json.dumps(result))
+    print(result)
+
 
 if __name__ == "__main__":
     main()
+
 
 # min_distance, best_order, path = tsp(matrix)
 # print("Minimum distance:", min_distance)

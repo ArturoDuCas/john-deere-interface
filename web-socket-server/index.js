@@ -80,7 +80,7 @@ wss.on("connection", (connection, req) => {
 
       // Pass the field_matrix data to the Python script here
       const { spawn } = require("child_process");
-      const pythonProcess = spawn("python", ["Harvester.py", JSON.stringify(message.data)]);
+      const pythonProcess = spawn("python3", ["./calculations/NewHarvester.py", JSON.stringify(message.data)]);
 
       pythonProcess.stdout.on("data", (data) => {
         // Handle the output from the Python script
