@@ -77,6 +77,9 @@ wss.on("connection", (connection, req) => {
     if (message.type === "harvester_number") {
       console.log("Cantidad de harvesters: ", message.data);
     }
+    if (message.type === "field-density") {
+      console.log("Densidad del harvester: ", message.data);
+    }
 
     if (message.type === "field_matrix") {
       console.log("matrix", message.data);

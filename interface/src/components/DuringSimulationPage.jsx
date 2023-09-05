@@ -69,6 +69,7 @@ const DuringSimulationPage = () => {
   const [gasCapacity, setGasCapacity] = useState(50);
   const [harvesterSpeed, setHarvesterSpeed] = useState(50);
   const [harvesterNumber, setHarvesterNumber] = useState(1);
+  const [fieldDensity, setFieldDensity] = useState(1);
 
   const { ws, id, unityId } = useContext(AppContext);
 
@@ -132,6 +133,13 @@ const DuringSimulationPage = () => {
         sender: id,
         receiver: unityId,
         data: `harvesterNumber:${harvesterNumber}`,
+      }));
+      //Density 
+      ws.send(JSON.stringify({
+        type: "field-density",
+        sender: id,
+        receiver: unityId,
+        data: `fieldDensity:${fieldDensity}`,
       }));
 
 
@@ -226,6 +234,21 @@ const DuringSimulationPage = () => {
                     id="mySlider5"
                     value={harvesterNumber}
                     onChange={(e) => setHarvesterNumber(e.target.value)}
+                    color="success"
+                />
+            </Box>
+        </div>
+        {/*Density*/}
+        <p style={texto}>Field Density: {fieldDensity}</p>
+        <div style={sliderContainerStyles}>
+            <Box sx={{ width: 300 }}>
+                <Slider
+                    min={1}
+                    max={maxSliderValue}
+                    step={1}
+                    id="mySlider6"
+                    value={fieldDensity}
+                    onChange={(e) => setFieldDensity(e.target.value)}
                     color="success"
                 />
             </Box>
