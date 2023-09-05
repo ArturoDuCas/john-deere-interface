@@ -57,6 +57,7 @@ wss.on("connection", (connection, req) => {
 
   connection.on("message", (data) => {
     const message = JSON.parse(data);
+    console.log(message.type);
     if (message.type === "connect") {
       setConnection(message);
     }
@@ -81,8 +82,8 @@ wss.on("connection", (connection, req) => {
       console.log("Densidad del harvester: ", message.data);
     }
 
-    if (message.type === "field_matrix") {
-      console.log("matrix", message.data);
+    if (message.type === "starting_harvester_data") {
+      console.log("info", message.data);
 
       // Pass the field_matrix data to the Python script here
       const { spawn } = require("child_process");

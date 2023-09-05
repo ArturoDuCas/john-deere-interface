@@ -76,48 +76,18 @@ def shortest_path(matrix, start, end):
 
     return float('inf'), []  # If no path is found
 
-def tsp(matrix):
-    """
-    Solve the Travelling Salesman Problem for points in the matrix marked by 1's.
-    
-    Parameters:
-    - matrix: 2D list containing 0's and 1's.
-    
-    Returns:
-    - Minimum total distance to visit all points.
-    - Order of visited points.
-    - Complete path with the shortest route.
-    """
-    
-    # Extract the points (cells with 1's)
+def tsp(matrix, start_point):
     points = [(i, j) for i in range(len(matrix)) for j in range(len(matrix[0])) if matrix[i][j] == 1]
     num_points = len(points)
-    
-    # Create a matrix to store distances between each pair of points
     distance_matrix = [[0] * num_points for _ in range(num_points)]
     
-    # Fill the distance matrix with shortest paths between each pair of points
     for i in range(num_points):
         for j in range(i+1, num_points):
             distance, _ = shortest_path(matrix, points[i], points[j])
             distance_matrix[i][j] = distance_matrix[j][i] = distance
     
-    # Preferably choose a border point to start, if available
-    border_points = [points[i] for i in range(num_points) if 
-                     points[i][0] == 0 or 
-                     points[i][1] == 0 or 
-                     points[i][0] == len(matrix) - 1 or 
-                     points[i][1] == len(matrix[0]) - 1]
-                     
-    # Choose the start point
-    if not border_points:
-        start_point = random.choice(points)
-    else:
-        start_point = random.choice(border_points)
-    
     start_index = points.index(start_point)
     
-    # Array to keep track of visited points
     visited = [False] * num_points
     visited[start_index] = True
     current_distance = 0
@@ -127,14 +97,10 @@ def tsp(matrix):
     while len(order) < num_points:
         next_point = None
         min_next_distance = float('inf')
-        
-        # Find the nearest unvisited point
         for j in range(num_points):
             if not visited[j] and distance_matrix[order[-1]][j] < min_next_distance:
                 min_next_distance = distance_matrix[order[-1]][j]
                 next_point = j
-        
-        # Update distance and mark point as visited
         current_distance += min_next_distance
         visited[next_point] = True
         order.append(next_point)
@@ -151,7 +117,7 @@ def tsp(matrix):
         _, sub_path = shortest_path(matrix, points[best_order[i-1]], points[best_order[i]])
         path += sub_path[1:]
     
-    return min_distance, [points[i] for i in best_order], path
+    return current_distance, [points[i] for i in best_order], path
 
 # Additional utility functions and main program are included as in your provided code.
 
@@ -227,17 +193,9 @@ def main():
 
     try:
         input_json = sys.argv[1]
-        
-        # Remove double quotes from the input JSON string
-        new_json = input_json.replace('"', '')
-        
-        # Remove backslashes from the JSON string
-        field_matrix = new_json.replace('\\', '')
-        new_field = field_matrix.replace('Data', '"Data"')
 
-        # Parse the JSON
-        new_dic = json.loads(new_field)
-        matrix = new_dic.get('Data',[])
+        print(input_json)
+        
 
     except json.JSONDecodeError:
         print('Invalid JSON syntax')
@@ -245,34 +203,34 @@ def main():
     num_objects = 2
 
     # Split the matrix for each object
-    object_matrices = split_matrix_for_objects(matrix, num_objects)
+    # object_matrices = split_matrix_for_objects(matrix, num_objects)
 
-    object_paths = []
-    object_best_orders = []
-    object_distances = []
+    # object_paths = []
+    # object_best_orders = []
+    # object_distances = []
 
     # For each object matrix, calculate the TSP path, order and distance
-    for obj_matrix in object_matrices:
-        dist, order, path = tsp(obj_matrix)
-        object_distances.append(dist)
-        object_best_orders.append(order)
-        object_paths.append(path)
+    # for obj_matrix in object_matrices:
+    #     dist, order, path = tsp(obj_matrix)
+    #     object_distances.append(dist)
+    #     object_best_orders.append(order)
+    #     object_paths.append(path)
 
     # For each object, calculate the nearest point in every other object's matrix 
     # and update the paths and distances accordingly
-    for i in range(num_objects):
-        for j in range(num_objects):
-            if i != j and object_distances[j] > 0:
-                nearest_point, _ = nearest_1(object_matrices[j], object_paths[i][-1])
-                if nearest_point:
-                    distance, path = shortest_path(matrix, object_paths[i][-1], nearest_point)
-                    object_paths[i] += path[1:]
-                    object_distances[i] += distance
+    # for i in range(num_objects):
+    #     for j in range(num_objects):
+    #         if i != j and object_distances[j] > 0:
+    #             nearest_point, _ = nearest_1(object_matrices[j], object_paths[i][-1])
+    #             if nearest_point:
+    #                 distance, path = shortest_path(matrix, object_paths[i][-1], nearest_point)
+    #                 object_paths[i] += path[1:]
+    #                 object_distances[i] += distance
 
-    for i in range(num_objects):
-        print(f"Object {i+1} Path:", object_paths[i])
-        print(f"Object {i+1} Total Distance:", object_distances[i])
-        print(f"Object {i+1} Best Order:", object_best_orders[i])
+    # for i in range(num_objects):
+    #     print(f"Object {i+1} Path:", object_paths[i])
+    #     print(f"Object {i+1} Total Distance:", object_distances[i])
+    #     print(f"Object {i+1} Best Order:", object_best_orders[i])
 
 
 if __name__ == "__main__":
