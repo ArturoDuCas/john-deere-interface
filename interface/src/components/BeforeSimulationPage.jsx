@@ -20,6 +20,29 @@ export default function BeforeSimulationPage() {
         receiver: unityId,
         data: `x:${x},z:${z}`,
       }));
+      //HHHHHHH
+      ws.send(JSON.stringify({
+        type: "gas_capacity",
+        sender: id,
+        receiver: unityId,
+        data: `gasCapacity:${gasCapacity}`,
+      }));
+      // HHHHHHHH
+      ws.send(JSON.stringify({
+        type: "harvester_speed",
+        sender: id,
+        receiver: unityId,
+        data: `harvesterSpeed:${harvesterSpeed}`,
+      }));
+      //HHHHHHHHHHH
+      ws.send(JSON.stringify({
+        type: "harvester_number",
+        sender: id,
+        receiver: unityId,
+        data: `harvesterSpeed:${harvesterNumber}`,
+      }));
+
+
     } else {
       console.log("WebSocket connection not ready.");
     }

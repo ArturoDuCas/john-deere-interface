@@ -19,7 +19,7 @@ export default function Routes() {
         <div className="flex flex-row items-baseline ml-6">
 
           <img src={JohnDeere_Logo} width={100} height={50} alt="" />
-          <h1 className="ml-5 text-2xl text-black">John Deere Simulation</h1>
+          <h1 className="ml-5 text-2xl text-black font-trebuchet-ms">John Deere Simulation</h1>
         </div>
       </header>
       <div className="h-5/6">

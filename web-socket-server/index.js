@@ -60,7 +60,10 @@ wss.on("connection", (connection, req) => {
     if (message.type === "connect") {
       setConnection(message);
     }
-    if (message.type === "field-dimensions") {
+    if (message.type === "field-dimensionsX") {
+      sendMessage(message);
+    }
+    if (message.type === "field-dimensionsY") {
       sendMessage(message);
     }
 
