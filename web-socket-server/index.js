@@ -99,46 +99,12 @@ wss.on("connection", (connection, req) => {
       //console.log("harvester_capacity: ", message.data)
     }
 
-    if (message.type == "python_harvester") {
-      sendMessage(message);
-    }
-
-    // if (message.type === "starting_harvester_data") {
-    //   console.log("starting_harvester_data: ", message);
-
-    //   // Pass the field_matrix data to the Python script here
-    //   const { spawn } = require("child_process");
-    //   const pythonProcess = spawn("python3", ["./calculations/NewHarvester.py", message.startingPoints, message.fieldMatrix]);
-
-    //   pythonProcess.stdout.on("data", (data) => {
-    //     // Handle the output from the Python script
-    //     const pythonResult = data.toString();
-    //     console.log("Python script result:", pythonResult);
-
-    //     // Send the result to the React component if needed
-    //     sendDataToReactComponent(pythonResult);
-
-    //     const message = {
-    //       type: "python_harvester",
-    //       sender: "server",
-    //       receiver: connection.id,
-    //       data: pythonResult
-    //     };
-
-    //     connection.send(JSON.stringify(message));
-    //   });
-
-    //   pythonProcess.stderr.on("data", (data) => {
-    //     console.error(`Error from Python script: ${data}`);
-    //   });
-    // }
-
-
-    if (message.type === "harvester_unload_request") {
+    if (message.type === "starting_harvester_data") {
+      console.log("starting_harvester_data: ", message);
 
       // Pass the field_matrix data to the Python script here
       const { spawn } = require("child_process");
-      const pythonProcess = spawn("python3", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos]);
+      const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", ["./calculations/NewHarvester.py", message.startingPoints, message.fieldMatrix]);
 
       pythonProcess.stdout.on("data", (data) => {
         // Handle the output from the Python script
@@ -148,6 +114,44 @@ wss.on("connection", (connection, req) => {
         // Send the result to the React component if needed
         sendDataToReactComponent(pythonResult);
 
+        const message = {
+          type: "python_harvester",
+          sender: "server",
+          receiver: connection.id,
+          data: pythonResult
+        };
+
+        connection.send(JSON.stringify(message));
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+        console.error(`Error from Python script: ${data}`);
+      });
+    }
+
+
+    if (message.type === "harvester_unload_request") {
+      // Pass the field_matrix data to the Python script here
+      const { spawn } = require("child_process");
+      const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos, message.trucksIds]);
+
+      pythonProcess.stdout.on("data", (data) => {
+        // Handle the output from the Python script
+        const pythonResult = data.toString();
+        console.log("Python script result:", pythonResult);
+
+        // Send the result to the React component if needed
+        sendDataToReactComponent(pythonResult);
+
+        const message = {
+          type: "truck_python",
+          sender: "server",
+          receiver: connection.id,
+          data: pythonResult
+        };
+
+        connection.send(JSON.stringify(message));
+
       });
 
       pythonProcess.stderr.on("data", (data) => {
@@ -155,8 +159,6 @@ wss.on("connection", (connection, req) => {
       });
 
     }
-
-
   });
 });
 

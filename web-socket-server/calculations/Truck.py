@@ -16,6 +16,10 @@ try:
     trucksInitialPos = sys.argv[4]
     trucksInitialPos = json.loads(trucksInitialPos)
 
+    trucksIds = sys.argv[5]
+    trucksIds = json.loads(trucksIds)
+    print(trucksIds)
+
 except json.JSONDecodeError:
     print('Invalid JSON syntax')
 
@@ -33,9 +37,9 @@ for i in range(len(rewards)):
         elif rewards[i][j] == 0:
             rewards[i][j] = -1
 
-# Print modified rewards matrix
-for row in rewards:
-    print(row)
+# # Print modified rewards matrix
+# for row in rewards:
+#     print(row)
 
 environment_rows = len(rewards)
 environment_columns = len(rewards[0]) 
@@ -142,9 +146,8 @@ for episode in range(1000):
     new_q_value = old_q_value + (learning_rate * temporal_difference)
     q_values[old_row_index, old_column_index, action_index] = new_q_value
 
-print('Training complete')
 
 for starting_point in trucksInitialPos:
     row, column = starting_point
     shortest_path = get_shortest_path(row, column)
-    print(f"Shortest path from {starting_point} to harvester: {shortest_path}")
+    print(shortest_path)
