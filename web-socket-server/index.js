@@ -1,8 +1,9 @@
 const { measureMemory } = require("vm");
 const WebSocket = require("ws");
-const wss = new WebSocket.Server({ port: 8080 }, () => {
-  console.log("Server started on port 8080");
+const wss = new WebSocket.Server({ port: 8081 }, () => {
+  console.log("Server started on port 8081");
 });
+
 
 const connectionPairs = {};
 
@@ -208,3 +209,4 @@ function sendPythonResultToUnity(pythonResult, senderId) {
     }
   });
 }
+

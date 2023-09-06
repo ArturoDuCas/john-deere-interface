@@ -17,6 +17,7 @@ export default function EstablishConnection() {
     } else {
       console.log(ws);
       console.log("WebSocket connection not ready.");
+      console.log(ws);
     }
   }
 

@@ -5,7 +5,7 @@ import LiquidFillGauge from 'react-liquid-gauge';
 
 class App extends Component {
     componentDidMount() {
-        this.ws = new WebSocket("ws://localhost:8080");
+        this.ws = new WebSocket("ws://localhost:8081");
       
         this.ws.onmessage = (event) => {
             const message = JSON.parse(event.data);

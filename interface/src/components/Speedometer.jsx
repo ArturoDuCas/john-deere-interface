@@ -4,7 +4,7 @@ import 'react-circular-progressbar/dist/styles.css';
 
 class HarvestingSpeedometer extends Component {
     componentDidMount() {
-        this.ws = new WebSocket("ws://localhost:8080");
+        this.ws = new WebSocket("ws://localhost:8081");
       
         this.ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
