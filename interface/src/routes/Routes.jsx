@@ -7,8 +7,8 @@ import AfterSimulationPage from "../components/AfterSimulationPage.jsx";
 import JohnDeere_Logo from "../public/John_Deere_logo.svg.png";
 
 export default function Routes() {
-  //const { step } = useContext(AppContext);
-  const step = 2;
+  const { step } = useContext(AppContext);
+  // const step = 2;
   console.log(step);
 
   return (

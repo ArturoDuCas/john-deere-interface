@@ -62,14 +62,15 @@ wss.on("connection", (connection, req) => {
     if (message.type === "connect") {
       setConnection(message);
     }
-    if (message.type === "field-dimensionsX") {
+    if (message.type === "config_field-dimensionsX") {
       sendMessage(message);
     }
-    if (message.type === "field-dimensionsY") {
+    if (message.type === "config_field-dimensionsY") {
       sendMessage(message);
     }
 
     if (message.type === "config_gas_capacity") {
+
       sendMessage(message);
     }
 
@@ -98,43 +99,42 @@ wss.on("connection", (connection, req) => {
       //console.log("harvester_capacity: ", message.data)
     }
 
-    if (message.type === "starting_harvester_data") {
-      console.log("starting_harvester_data: ", message);
-
-      // Pass the field_matrix data to the Python script here
-      const { spawn } = require("child_process");
-      const pythonProcess = spawn("python3", ["./calculations/NewHarvester.py", message.startingPoints, message.fieldMatrix]);
-
-      pythonProcess.stdout.on("data", (data) => {
-        // Handle the output from the Python script
-        const pythonResult = data.toString();
-        console.log("Python script result:", pythonResult);
-
-        // Send the result to the React component if needed
-        sendDataToReactComponent(pythonResult);
-
-        const message = {
-          type: "python_harvester",
-          sender: "server",
-          receiver: connection.id,
-          data: pythonResult
-        };
-
-        connection.send(JSON.stringify(message));
-      });
-
-      pythonProcess.stderr.on("data", (data) => {
-        console.error(`Error from Python script: ${data}`);
-      });
-    }
-
     if (message.type == "python_harvester") {
       sendMessage(message);
     }
 
-    if (message.type === "harvester_unload_request") {
+    // if (message.type === "starting_harvester_data") {
+    //   console.log("starting_harvester_data: ", message);
 
-      console.log("Entra a la funcion")
+    //   // Pass the field_matrix data to the Python script here
+    //   const { spawn } = require("child_process");
+    //   const pythonProcess = spawn("python3", ["./calculations/NewHarvester.py", message.startingPoints, message.fieldMatrix]);
+
+    //   pythonProcess.stdout.on("data", (data) => {
+    //     // Handle the output from the Python script
+    //     const pythonResult = data.toString();
+    //     console.log("Python script result:", pythonResult);
+
+    //     // Send the result to the React component if needed
+    //     sendDataToReactComponent(pythonResult);
+
+    //     const message = {
+    //       type: "python_harvester",
+    //       sender: "server",
+    //       receiver: connection.id,
+    //       data: pythonResult
+    //     };
+
+    //     connection.send(JSON.stringify(message));
+    //   });
+
+    //   pythonProcess.stderr.on("data", (data) => {
+    //     console.error(`Error from Python script: ${data}`);
+    //   });
+    // }
+
+
+    if (message.type === "harvester_unload_request") {
 
       // Pass the field_matrix data to the Python script here
       const { spawn } = require("child_process");
