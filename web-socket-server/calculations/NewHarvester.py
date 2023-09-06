@@ -233,7 +233,7 @@ def main():
                     object_distances[i] += distance
 
     for i in range(num_objects):
-        print(f"Harvester {i+1} Path:", object_paths[i])
+        print(object_paths[i])
         # print(f"Object {i+1} Total Distance:", object_distances[i])
         # print(f"Object {i+1} Best Order:", object_best_orders[i])
 

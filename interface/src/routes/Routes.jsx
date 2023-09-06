@@ -8,6 +8,7 @@ import JohnDeere_Logo from "../public/John_Deere_logo.svg.png";
 
 export default function Routes() {
   const { step } = useContext(AppContext);
+  console.log(step);
   // const step = 1;
   // console.log(step);
 

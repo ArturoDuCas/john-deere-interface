@@ -68,18 +68,31 @@ wss.on("connection", (connection, req) => {
       sendMessage(message);
     }
 
+    if (message.type === "config_gas_capacity") {
+      sendMessage(message);
+    }
+
+    if (message.type === "config_harvester_speed") {
+      sendMessage(message);
+
+    }
+    if (message.type === "config_harvester_number") {
+      sendMessage(message)
+    }
+    if (message.type === "config_field-density") {
+      sendMessage(message)
+    }
+
     if (message.type === "gas_capacity") {
       //console.log("Gasolina restante: ", message.data)
     }
 
     if (message.type === "harvester_speed") {
-      console.log("Velocidad de harvester: ", message.data);
+      //console.log("harvester_speed", message.data)
     }
-    if (message.type === "harvester_number") {
-      console.log("Cantidad de harvesters: ", message.data);
-    }
-    if (message.type === "field-density") {
-      console.log("Densidad del harvester: ", message.data);
+
+    if (message.type === "harvester_capacity") {
+      //console.log("harvester_capacity: ", message.data)
     }
 
     if (message.type === "starting_harvester_data") {
@@ -103,31 +116,41 @@ wss.on("connection", (connection, req) => {
       });
     }
 
+    if (message.type == "python_harvester") {
+      sendMessage(message);
+    }
 
-    // if (message.type === "harvester_unload_request") {
+    if (message.type === "harvester_unload_request") {
 
-    //   console.log("Entra a la funcion")
+      console.log("Entra a la funcion")
 
-    //   // Pass the field_matrix data to the Python script here
-    //   const { spawn } = require("child_process");
-    //   const pythonProcess = spawn("python3", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos]);
+      // Pass the field_matrix data to the Python script here
+      const { spawn } = require("child_process");
+      const pythonProcess = spawn("python3", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos]);
 
-    //   pythonProcess.stdout.on("data", (data) => {
-    //     // Handle the output from the Python script
-    //     const pythonResult = data.toString();
-    //     console.log("Python script result:", pythonResult);
+      pythonProcess.stdout.on("data", (data) => {
+        // Handle the output from the Python script
+        const pythonResult = data.toString();
+        console.log("Python script result:", pythonResult);
 
-    //     // Send the result to the React component if needed
-    //     sendDataToReactComponent(pythonResult);
-    //     sendPythonResultToUnity(pythonResult, message.sender); // Pass the sender ID to identify the recipient
+        // Send the result to the React component if needed
+        sendDataToReactComponent(pythonResult);
 
-    //   });
+        // sendPythonResultToUnity(pythonResult, message.sender); // Pass the sender ID to identify the recipient
+        ws.send(JSON.stringify({
+          type: "python_harvester",
+          sender: id,
+          receiver: unityId,
+          data: pythonResult,
+        }));
 
-    //   pythonProcess.stderr.on("data", (data) => {
-    //     console.error(`Error from Python script: ${data}`);
-    //   });
+      });
 
-    // }
+      pythonProcess.stderr.on("data", (data) => {
+        console.error(`Error from Python script: ${data}`);
+      });
+
+    }
 
 
   });
@@ -154,7 +177,7 @@ function sendDataToReactComponent(data) {
 function sendPythonResultToUnity(pythonResult, senderId) {
   // Create a message with the Python result
   const message = {
-    type: 'python_script_result', // You can customize this message type
+    type: 'python_harvester', // You can customize this message type
     data: pythonResult,
   };
 
