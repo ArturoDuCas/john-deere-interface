@@ -2,14 +2,34 @@ import { color } from 'd3-color';
 import { interpolateRgb } from 'd3-interpolate';
 import React, { Component } from 'react';
 import LiquidFillGauge from 'react-liquid-gauge';
- 
+
 class App extends Component {
+    componentDidMount() {
+        this.ws = new WebSocket("ws://localhost:8080");
+      
+        this.ws.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            if (message.type === 'harvesterload') {
+                this.setState({ value: message.data });
+            }
+        };
+
+        this.ws.onclose = () => {
+            console.log('Disconnected from server');
+        };
+    }
+
+    componentWillUnmount() {
+        this.ws.close();
+    }
+
     state = {
-        value: 50
+        value: 0
     };
-    startColor = '#6495ed'; // cornflowerblue
-    endColor = '#dc143c'; // crimson
- 
+
+    startColor = '#808080'; // grey
+    endColor = '#FFFF00'; // yellow
+
     render() {
         const radius = 200;
         const interpolate = interpolateRgb(this.startColor, this.endColor);
@@ -17,7 +37,7 @@ class App extends Component {
         const gradientStops = [
             {
                 key: '0%',
-                stopColor: color(fillColor).darker(0.5).toString(),
+                stopColor: this.startColor,
                 stopOpacity: 1,
                 offset: '0%'
             },
@@ -29,14 +49,17 @@ class App extends Component {
             },
             {
                 key: '100%',
-                stopColor: color(fillColor).brighter(0.5).toString(),
+                stopColor: this.endColor,
                 stopOpacity: 0.5,
                 offset: '100%'
             }
         ];
- 
+
         return (
             <div>
+                <h1 className="text-center text-4xl font-bold mb-8" style={{ fontFamily: 'Trebuchet MS, sans-serif' }}>
+                    Harvester Load Capacity
+                </h1>
                 <LiquidFillGauge
                     style={{ margin: '0 auto' }}
                     width={radius * 2}
@@ -56,7 +79,7 @@ class App extends Component {
                         const percentStyle = {
                             fontSize: textPixels * 0.6
                         };
- 
+                        
                         return (
                             <tspan>
                                 <tspan className="value" style={valueStyle}>{value}</tspan>
@@ -65,9 +88,7 @@ class App extends Component {
                         );
                     }}
                     riseAnimation
-                    //waveAnimation
-                    //waveFrequency={2}
-                    //waveAmplitude={1}
+                    waveAnimation={false}
                     gradient
                     gradientStops={gradientStops}
                     circleStyle={{
@@ -84,29 +105,10 @@ class App extends Component {
                         fill: color('#fff').toString(),
                         fontFamily: 'Arial'
                     }}
-                    onClick={() => {
-                        this.setState({ value: Math.random() * 100 });
-                    }}
                 />
-                <div
-                    style={{
-                        margin: '20px auto',
-                        width: 120
-                    }}
-                >
-                    <button
-                        type="button"
-                        className="btn btn-default btn-block"
-                        onClick={() => {
-                            this.setState({ value: Math.random() * 100 });
-                        }}
-                    >
-                        Refresh
-                    </button>
-                </div>
             </div>
         );
     }
 }
- 
+
 export default App;

@@ -4,6 +4,7 @@ import Background from "../public/background.png"
 //Prueba
 import HarvestingLoad from './HarvestingLoad';
 
+
 export default function BeforeSimulationPage() {
 
   const { ws, id, unityId } = useContext(AppContext);
@@ -57,14 +58,17 @@ export default function BeforeSimulationPage() {
       </div>
 
       <div>
-            <h1>Your Main App</h1>
+          
             <HarvestingLoad />
             {/* other components and content */}
-        </div>
+      </div>
 
     </div >
   );
 }
+
+
+
 
 
  
