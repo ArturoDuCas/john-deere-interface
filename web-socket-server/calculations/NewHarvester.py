@@ -86,7 +86,7 @@ def tsp(matrix, start_point, index):
         for j in range(i+1, num_points):
             distance, _ = shortest_path(matrix, points[i], points[j])
             distance_matrix[i][j] = distance_matrix[j][i] = distance
-            
+
     start_index = index
     
     # Array to keep track of visited points
@@ -178,7 +178,6 @@ def main():
 
     try:
         starting_points = sys.argv[1]
-        print("starting_points", starting_points)
 
         # Parse the JSON
         new_starting_points = json.loads(starting_points)
@@ -231,10 +230,12 @@ def main():
                     object_distances[i] += distance
 
     for i in range(num_objects):
-        print(object_paths[i])
-        # print(f"Object {i+1} Total Distance:", object_distances[i])
-        # print(f"Object {i+1} Best Order:", object_best_orders[i])
 
+        # Print the JSON string
+        # print(object_paths_json)
+        
+        print(object_paths[i])
+      
 
 if __name__ == "__main__":
     main()
