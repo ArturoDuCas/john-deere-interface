@@ -109,6 +109,15 @@ wss.on("connection", (connection, req) => {
 
         // Send the result to the React component if needed
         sendDataToReactComponent(pythonResult);
+
+        const message = {
+          type: "python_harvester",
+          sender: "server",
+          receiver: connection.id,
+          data: pythonResult
+        };
+
+        connection.send(JSON.stringify(message));
       });
 
       pythonProcess.stderr.on("data", (data) => {
@@ -135,14 +144,6 @@ wss.on("connection", (connection, req) => {
 
         // Send the result to the React component if needed
         sendDataToReactComponent(pythonResult);
-
-        // sendPythonResultToUnity(pythonResult, message.sender); // Pass the sender ID to identify the recipient
-        ws.send(JSON.stringify({
-          type: "python_harvester",
-          sender: id,
-          receiver: unityId,
-          data: pythonResult,
-        }));
 
       });
 

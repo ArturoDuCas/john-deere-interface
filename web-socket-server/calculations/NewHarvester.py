@@ -86,9 +86,7 @@ def tsp(matrix, start_point, index):
         for j in range(i+1, num_points):
             distance, _ = shortest_path(matrix, points[i], points[j])
             distance_matrix[i][j] = distance_matrix[j][i] = distance
-
-    print(start_point)
-
+            
     start_index = index
     
     # Array to keep track of visited points
@@ -190,12 +188,12 @@ def main():
 
 
         field_matrix = sys.argv[2]
-        print("field_matrix", field_matrix)
+        # print("field_matrix", field_matrix)
 
 
         # Parse the JSON
         matrix = json.loads(field_matrix)
-        print("field_matrix", field_matrix, type(field_matrix))
+        # print("field_matrix", field_matrix, type(field_matrix))
 
         # matrix = new_points_dic.get('Data',[])
 
