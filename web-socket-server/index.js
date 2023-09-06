@@ -104,28 +104,30 @@ wss.on("connection", (connection, req) => {
     }
 
 
-    if (message.type === "harvester_unload_request") {
+    // if (message.type === "harvester_unload_request") {
 
-      console.log("Entra a la funcion")
+    //   console.log("Entra a la funcion")
 
-      // Pass the field_matrix data to the Python script here
-      const { spawn } = require("child_process");
-      const pythonProcess = spawn("python3", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos]);
+    //   // Pass the field_matrix data to the Python script here
+    //   const { spawn } = require("child_process");
+    //   const pythonProcess = spawn("python3", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos]);
 
-      pythonProcess.stdout.on("data", (data) => {
-        // Handle the output from the Python script
-        const pythonResult = data.toString();
-        console.log("Python script result:", pythonResult);
+    //   pythonProcess.stdout.on("data", (data) => {
+    //     // Handle the output from the Python script
+    //     const pythonResult = data.toString();
+    //     console.log("Python script result:", pythonResult);
 
-        // Send the result to the React component if needed
-        sendDataToReactComponent(pythonResult);
-      });
+    //     // Send the result to the React component if needed
+    //     sendDataToReactComponent(pythonResult);
+    //     sendPythonResultToUnity(pythonResult, message.sender); // Pass the sender ID to identify the recipient
 
-      pythonProcess.stderr.on("data", (data) => {
-        console.error(`Error from Python script: ${data}`);
-      });
+    //   });
 
-    }
+    //   pythonProcess.stderr.on("data", (data) => {
+    //     console.error(`Error from Python script: ${data}`);
+    //   });
+
+    // }
 
 
   });
@@ -144,6 +146,21 @@ function sendDataToReactComponent(data) {
   };
   wss.clients.forEach((client) => {
     if (client.id === 'your_receiver_id') { // Customize this
+      client.send(JSON.stringify(message));
+    }
+  });
+}
+
+function sendPythonResultToUnity(pythonResult, senderId) {
+  // Create a message with the Python result
+  const message = {
+    type: 'python_script_result', // You can customize this message type
+    data: pythonResult,
+  };
+
+  // Send the message to the client with the specified senderId
+  wss.clients.forEach((client) => {
+    if (client.id === senderId) {
       client.send(JSON.stringify(message));
     }
   });

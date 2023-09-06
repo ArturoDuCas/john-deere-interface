@@ -12,43 +12,27 @@ import numpy as np
 import heapq
 import random
 
-def shortest_path(matrix, start_point):
+def shortest_path(matrix, start, end):
     """
-    Find the shortest path between start and end points in a binary matrix using Dijkstra's algorithm.
+    This function finds the shortest path between two points in a matrix.
     
-    Parameters:
-    - matrix: 2D list containing 0's and 1's.
-    - start: Tuple of start point (row, column).
-    - end: Tuple of end point (row, column).
-    
-    Returns:
-    - Minimum distance between start and end.
-    - Path as list of points (row, column) from start to end.
+    :param matrix: 2D list of integers, the input matrix.
+    :param start: tuple of integers, the starting point (i, j).
+    :param end: tuple of integers, the ending point (i, j).
+    :return: tuple, the minimum distance and the path as a list of points.
     """
-    
     rows, cols = len(matrix), len(matrix[0])
-    
-    # Possible movements: right, down, left, up
-    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
-    
-    # Create a matrix to mark visited cells
-    visited = [[False] * cols for _ in range(rows)]
-    
-    # Create a matrix to store shortest distances from the start to each cell
-    min_distance = [[float('inf')] * cols for _ in range(rows)]
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]  # Possible directions: right, down, left, up
+    visited = [[False] * cols for _ in range(rows)]  # Matrix to track visited cells
+    min_distance = [[float('inf')] * cols for _ in range(rows)]  # Matrix to store minimum distances
     min_distance[start[0]][start[1]] = 0
+    pq = [(0, start)]  # Priority queue for distances
+    paths = [[None] * cols for _ in range(rows)]  # Matrix to store paths
     
-    # Priority queue to store vertices to be visited next
-    pq = [(0, start)]
-    
-    # Matrix to store the previous cell in the shortest path to each cell
-    paths = [[None] * cols for _ in range(rows)]
-
     while pq:
-        # Get the next vertex with the shortest distance from start
-        current_distance, current_vertex = heapq.heappop(pq)
+        current_distance, current_vertex = heapq.heappop(pq)  # Pop the vertex with the smallest distance
         
-        # If we've reached the end, reconstruct the path and return
+        # If the current vertex is the end, construct the path and return the result
         if current_vertex == end:
             path = []
             i, j = end
@@ -63,39 +47,51 @@ def shortest_path(matrix, start_point):
         if visited[i][j]:
             continue
         visited[i][j] = True
-
-        # Explore neighbors
+        
+        # Check all possible directions
         for x, y in directions:
             ni, nj = i + x, j + y
             if 0 <= ni < rows and 0 <= nj < cols:
-                distance = current_distance + 1  # Assuming all edges have weight 1
+                distance = current_distance + 1
                 if distance < min_distance[ni][nj]:
                     min_distance[ni][nj] = distance
                     heapq.heappush(pq, (distance, (ni, nj)))
                     paths[ni][nj] = (i, j)
+                    
+    return float('inf'), []  # Return infinity if no path is found
 
-    return float('inf'), []  # If no path is found
-
-def tsp(matrix, start_point):
-    print("entra a la fuction TSP")
-
+def tsp(matrix, start_point, index):
+    """
+    Solve the Travelling Salesman Problem for points in the matrix marked by 1's.
+    
+    Parameters:
+    - matrix: 2D list containing 0's and 1's.
+    - start_point: Tuple (x, y) denoting the starting point.
+    
+    Returns:
+    - Minimum total distance to visit all points.
+    - Order of visited points.
+    - Complete path with the shortest route.
+    """
+    
+    # Extract the points (cells with 1's)
     points = [(i, j) for i in range(len(matrix)) for j in range(len(matrix[0])) if matrix[i][j] == 1]
     num_points = len(points)
+       
+    # Create a matrix to store distances between each pair of points
     distance_matrix = [[0] * num_points for _ in range(num_points)]
     
+    # Fill the distance matrix with shortest paths between each pair of points
     for i in range(num_points):
         for j in range(i+1, num_points):
             distance, _ = shortest_path(matrix, points[i], points[j])
             distance_matrix[i][j] = distance_matrix[j][i] = distance
-    
-    start_point = tuple(start_point)
-    
-    start_index = None
-    for i, point in enumerate(points):
-        if point == start_point:
-            start_index = i
-            break
 
+    print(start_point)
+
+    start_index = index
+    
+    # Array to keep track of visited points
     visited = [False] * num_points
     visited[start_index] = True
     current_distance = 0
@@ -105,10 +101,14 @@ def tsp(matrix, start_point):
     while len(order) < num_points:
         next_point = None
         min_next_distance = float('inf')
+        
+        # Find the nearest unvisited point
         for j in range(num_points):
             if not visited[j] and distance_matrix[order[-1]][j] < min_next_distance:
                 min_next_distance = distance_matrix[order[-1]][j]
                 next_point = j
+        
+        # Update distance and mark point as visited
         current_distance += min_next_distance
         visited[next_point] = True
         order.append(next_point)
@@ -125,8 +125,7 @@ def tsp(matrix, start_point):
         _, sub_path = shortest_path(matrix, points[best_order[i-1]], points[best_order[i]])
         path += sub_path[1:]
     
-    return current_distance, [points[i] for i in best_order], path
-
+    return min_distance, [points[i] for i in best_order], path
 # Additional utility functions and main program are included as in your provided code.
 
 
@@ -181,30 +180,24 @@ def main():
 
     try:
         starting_points = sys.argv[1]
-
-        # Remove double quotes from the input JSON string
-        starting_points = starting_points.replace('"', '')
-        
-        # Remove backslashes from the JSON string
-        starting_points = starting_points.replace('\\', '')
-        starting_points = starting_points.replace('Data', '"Data"')
+        print("starting_points", starting_points)
 
         # Parse the JSON
-        new_points_dic = json.loads(starting_points)
-        new_starting_points = new_points_dic.get('Data',[])
+        new_starting_points = json.loads(starting_points)
+        # print("new_points_dic", new_points_dic, type(new_points_dic))
+
+        # new_starting_points = new_points_dic.get('Data',[])
 
 
         field_matrix = sys.argv[2]
-        
-        field_matrix = field_matrix.replace('"', '')
-        
-        # Remove backslashes from the JSON string
-        field_matrix = field_matrix.replace('\\', '')
-        field_matrix = field_matrix.replace('Data', '"Data"')
+        print("field_matrix", field_matrix)
+
 
         # Parse the JSON
-        field_matrix = json.loads(field_matrix)
-        matrix = new_points_dic.get('Data',[])
+        matrix = json.loads(field_matrix)
+        print("field_matrix", field_matrix, type(field_matrix))
+
+        # matrix = new_points_dic.get('Data',[])
 
 
     except json.JSONDecodeError:
@@ -220,11 +213,10 @@ def main():
     object_distances = []
 
     # For each object matrix, calculate the TSP path, order and distance
-    for obj_matrix, starting_point_list in zip(object_matrices, new_starting_points):
+    for index, (obj_matrix, starting_point_list) in enumerate(zip(object_matrices, new_starting_points)):
         # Convert the list to a tuple here
         starting_point = tuple(starting_point_list)
-        print("aqui", starting_point)
-        dist, order, path = tsp(obj_matrix, starting_point)
+        dist, order, path = tsp(obj_matrix, starting_point, index)
         object_distances.append(dist)
         object_best_orders.append(order)
         object_paths.append(path)
@@ -241,9 +233,9 @@ def main():
                     object_distances[i] += distance
 
     for i in range(num_objects):
-        print(f"Object {i+1} Path:", object_paths[i])
-        print(f"Object {i+1} Total Distance:", object_distances[i])
-        print(f"Object {i+1} Best Order:", object_best_orders[i])
+        print(f"Harvester {i+1} Path:", object_paths[i])
+        # print(f"Object {i+1} Total Distance:", object_distances[i])
+        # print(f"Object {i+1} Best Order:", object_best_orders[i])
 
 
 if __name__ == "__main__":
