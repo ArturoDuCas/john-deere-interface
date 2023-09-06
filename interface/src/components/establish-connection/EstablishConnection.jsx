@@ -15,6 +15,7 @@ export default function EstablishConnection() {
         data: unityId,
       }));
     } else {
+      console.log(ws);
       console.log("WebSocket connection not ready.");
     }
   }
@@ -47,3 +48,4 @@ export default function EstablishConnection() {
 
   )
 }
+
