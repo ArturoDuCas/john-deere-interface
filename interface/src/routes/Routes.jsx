@@ -7,10 +7,9 @@ import AfterSimulationPage from "../components/AfterSimulationPage.jsx";
 import JohnDeere_Logo from "../public/John_Deere_logo.svg.png";
 
 export default function Routes() {
-  const { step } = useContext(AppContext);
+  //const { step } = useContext(AppContext);
+  const step = 2;
   console.log(step);
-  // const step = 1;
-  // console.log(step);
 
   return (
     <div className="h-screen">
