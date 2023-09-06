@@ -31,7 +31,12 @@ class App extends Component {
     endColor = '#FFFF00'; // yellow
 
     render() {
-        const radius = 200;
+        const radius = 150;
+        const textStyle = {
+            fill: '#000', // Black color
+            fontFamily: 'Trebuchet MS, sans-serif',
+            fontWeight: 'bold',
+        };
         const interpolate = interpolateRgb(this.startColor, this.endColor);
         const fillColor = interpolate(this.state.value / 100);
         const gradientStops = [
@@ -54,10 +59,11 @@ class App extends Component {
                 offset: '100%'
             }
         ];
+        
 
         return (
             <div>
-                <h1 className="text-center text-4xl font-bold mb-8" style={{ fontFamily: 'Trebuchet MS, sans-serif' }}>
+                <h1 className="text-center text-4xl font-bold mb-8" style={textStyle}>
                     Harvester Load Capacity
                 </h1>
                 <LiquidFillGauge
@@ -72,12 +78,12 @@ class App extends Component {
                     textRenderer={(props) => {
                         const value = Math.round(props.value);
                         const radius = Math.min(props.height / 2, props.width / 2);
-                        const textPixels = (props.textSize * radius / 2);
+                        const textPixels = (props.textSize * radius / 2.4);
                         const valueStyle = {
-                            fontSize: textPixels
+                            fontSize: textPixels,
                         };
                         const percentStyle = {
-                            fontSize: textPixels * 0.6
+                            fontSize: textPixels
                         };
                         
                         return (
@@ -97,14 +103,8 @@ class App extends Component {
                     waveStyle={{
                         fill: fillColor
                     }}
-                    textStyle={{
-                        fill: color('black').toString(),
-                        fontFamily: 'Arial'
-                    }}
-                    waveTextStyle={{
-                        fill: color('#fff').toString(),
-                        fontFamily: 'Arial'
-                    }}
+                    textStyle={textStyle}
+                    waveTextStyle={textStyle}
                 />
             </div>
         );
