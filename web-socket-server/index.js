@@ -1,3 +1,4 @@
+const { measureMemory } = require("vm");
 const WebSocket = require("ws");
 const wss = new WebSocket.Server({ port: 8080 }, () => {
   console.log("Server started on port 8080");
@@ -84,6 +85,7 @@ wss.on("connection", (connection, req) => {
     }
 
     if (message.type === "gas_capacity") {
+      sendDataToReactComponent2(message.data, message.sender);
       //console.log("Gasolina restante: ", message.data)
     }
 
@@ -92,6 +94,7 @@ wss.on("connection", (connection, req) => {
     }
 
     if (message.type === "harvester_capacity") {
+      sendDataToReactComponent(message.data, message.sender);
       //console.log("harvester_capacity: ", message.data)
     }
 
@@ -162,18 +165,32 @@ wss.on("listening", () => {
 })
 
 // In your Node.js server
-function sendDataToReactComponent(data) {
+function sendDataToReactComponent(data, senderId) {
   // Send the data to the React component
   const message = {
-    type: 'your_message_type', // Customize this
+    type: 'harvester_capacity', // Customize this
     data: data,
   };
   wss.clients.forEach((client) => {
-    if (client.id === 'your_receiver_id') { // Customize this
+    if (client.id === senderId) { // Customize this
       client.send(JSON.stringify(message));
     }
   });
 }
+
+function sendDataToReactComponent2(data, senderId) {
+  // Send the data to the React component
+  const message = {
+    type: 'gas_capacity', // Customize this
+    data: data,
+  };
+  wss.clients.forEach((client) => {
+    if (client.id === senderId) { // Customize this
+      client.send(JSON.stringify(message));
+    }
+  });
+}
+
 
 function sendPythonResultToUnity(pythonResult, senderId) {
   // Create a message with the Python result

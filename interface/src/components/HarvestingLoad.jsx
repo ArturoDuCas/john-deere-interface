@@ -9,7 +9,7 @@ class App extends Component {
       
         this.ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
-            if (message.type === 'harvesterload') {
+            if (message.type === 'harvester_capacity') {
                 this.setState({ value: message.data });
             }
         };

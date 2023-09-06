@@ -3,6 +3,8 @@ import { AppContext } from "../context/AppContext.jsx";
 import Background from "../public/background.png"
 //Prueba
 import HarvestingLoad from './HarvestingLoad';
+import Speedometer from './Speedometer';
+
 
 
 export default function BeforeSimulationPage() {
@@ -52,15 +54,16 @@ export default function BeforeSimulationPage() {
   return (
 
     <div className="bg-cover grid grid-cols-2 gap-6">
-      <div className="">
-        <img src={Background} alt="" className="absolute w-1/2 h-full" />
-        
-      </div>
+      
 
       <div>
           
             <HarvestingLoad />
             {/* other components and content */}
+      </div>
+      <div>
+            <Speedometer />
+
       </div>
 
     </div >
