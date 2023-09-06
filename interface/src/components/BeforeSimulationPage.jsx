@@ -8,67 +8,19 @@ import Speedometer from './Speedometer';
 
 
 export default function BeforeSimulationPage() {
-
-  const { ws, id, unityId } = useContext(AppContext);
-
-  /*
-  function handleSubmit(e) {
-    e.preventDefault();
-
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({
-        type: "field-dimensions",
-        sender: id,
-        receiver: unityId,
-        data: `x:${x},z:${z}`,
-      }));
-      //HHHHHHH
-      ws.send(JSON.stringify({
-        type: "gas_capacity",
-        sender: id,
-        receiver: unityId,
-        data: `gasCapacity:${gasCapacity}`,
-      }));
-      // HHHHHHHH
-      ws.send(JSON.stringify({
-        type: "harvester_speed",
-        sender: id,
-        receiver: unityId,
-        data: `harvesterSpeed:${harvesterSpeed}`,
-      }));
-      //HHHHHHHHHHH
-      ws.send(JSON.stringify({
-        type: "harvester_number",
-        sender: id,
-        receiver: unityId,
-        data: `harvesterSpeed:${harvesterNumber}`,
-      }));
-
-
-    } else {
-      console.log("WebSocket connection not ready.");
-    }
-  }
-  */
-
   return (
-
-    <div className="bg-cover grid grid-cols-2 gap-6">
-      
-
-      <div>
-          
-            <HarvestingLoad />
-            {/* other components and content */}
+      <div className="w-full bg-cover flex items-center justify-center h-screen">
+          <div className="flex flex-col justify-center items-center space-y-4">
+              <HarvestingLoad />
+              <Speedometer />
+          </div>
+          {/* Other column content, if any */}
       </div>
-      <div>
-            <Speedometer />
-
-      </div>
-
-    </div >
   );
 }
+
+
+
 
 
 

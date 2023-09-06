@@ -4,59 +4,6 @@ import Slider from '@mui/material/Slider';
 import { AppContext } from "../context/AppContext.jsx";
 
 
-/* 
-// This custom hook handles incoming WebSocket messages and updates the related state values.
-const useWebSocketData = (socket) => {
-  
-  // Define states for the three different message types
-  // This allows your React components to reactively display the data
-  useEffect(() => {
-    socket.onmessage = (event) => {
-      // Parse the received JSON message from the WebSocket
-      const message = JSON.parse(event.data);
-
-      // Depending on the message type, update the appropriate state variable
-      switch (message.type) {
-        case 'field-dimensionsX':
-          setFieldDimensionsX(message.data);
-          break;
-
-        case'field-dimensionsY':
-          setFieldDimensionsY(message.data);
-          break;
-        case 'gas_capacity':
-          console.log('Gasolina restante:', message.data);
-          setGasCapacity(message.data);
-          break;
-        case 'harvester_speed':
-          console.log('Velocidad de harvester:', message.data);
-          setHarvesterSpeed(message.data);
-          break;
-        case 'harvester_number':
-          console.log('Cantidad de harvesters:', message.data);
-          setHarvesterNumber(message.data);
-          break;
-        default:
-          console.log('Received message:', message);
-      }
-    };
-
-    // Cleanup: remove the event listener when the component that uses this hook unmounts
-    return () => {
-      socket.onmessage = null;
-    };
-
-    // Optionally, you can handle socket.onclose, socket.onerror, etc. here as well.
-  }, [socket]);  // 'socket' is a dependency, ensuring that if it changes, the effect runs again.
-
-  // Return the states so they can be accessed and used in your component
-  return { fieldDimensionsX, fieldDimensionsY, gasCapacity, harvesterSpeed, harvesterNumber};
-
-
-}
-*/
-
-
 // This is a sample component that utilizes the above hook to receive and display WebSocket data.
 const DuringSimulationPage = () => {
 

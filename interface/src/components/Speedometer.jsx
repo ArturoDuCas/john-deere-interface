@@ -27,17 +27,23 @@ class HarvestingSpeedometer extends Component {
     };
 
     render() {
-        const radius = 200; // Same as the gauge
+        const radius = 150; // Same as the gauge
+        const textStyle = {
+            fill: '#000', // Black color
+            fontFamily: 'Trebuchet MS, sans-serif',
+            fontWeight: 'bold',
+        };
 
         return (
             <div>
-                <h1 className="text-center text-4xl font-bold mb-8" style={{ fontFamily: 'Trebuchet MS, sans-serif' }}>
-                    Harvester Load Capacity
+                <h1 className="text-center text-4xl font-bold mb-8" style={textStyle}>
+                    Gasoline
                 </h1>
                 <div style={{ width: radius * 2, height: radius * 2, margin: '0 auto' }}>
                     <CircularProgressbar
                         value={this.state.value}
-                        text={`${this.state.value} %`}
+                        text={`${this.state.value}%`}
+                        textSize={4}
                         circleRatio={0.7} /* Make the circle only 0.7 of the full diameter */
                         styles={{
                             trail: {
@@ -52,13 +58,9 @@ class HarvestingSpeedometer extends Component {
                                 transformOrigin: 'center center',
                                 stroke: '#000', // Black color
                             },
-                            text: {
-                                fill: '#000', // Black color
-                                fontFamily: 'Trebuchet MS, sans-serif',
-                                fontWeight: 'bold',
-                            },
+                            text: textStyle,
                         }}
-                        strokeWidth={10}
+                        strokeWidth={6}
                     />
                 </div>
             </div>
