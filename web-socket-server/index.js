@@ -101,6 +101,32 @@ wss.on("connection", (connection, req) => {
       //console.log("harvester_capacity: ", message.data)
     }
 
+
+    if (message.type === "send-truck-to-silos") {
+      console.log("send-truck-to-silos: ", message);
+
+      const { spawn } = require("child_process");
+      const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", ["./calculations/TruckToSilos.py", message.finalPos, message.fieldMatrix, message.truckInitialPos, message.truckId]);
+
+      pythonProcess.stdout.on("data", (data) => {
+        const pythonResult = data.toString();
+        console.log("Truck To Silos result:", pythonResult);
+
+        const message = {
+          type: "truck_to_silos",
+          sender: "server",
+          receiver: connection.id,
+          data: pythonResult
+        };
+
+        connection.send(JSON.stringify(message));
+        });
+
+      pythonProcess.stderr.on("data", (data) => {
+        console.error(`Error from Python script: ${data}`);
+      });
+    }
+
     if (message.type === "starting_harvester_data") {
       console.log("starting_harvester_data: ", message);
 
@@ -163,7 +189,6 @@ wss.on("connection", (connection, req) => {
 
 
     if (message.type === "harvester_unload_request") {
-
       // Pass the field_matrix data to the Python script here
       const { spawn } = require("child_process");
       const pythonProcess = spawn("python3", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos]);

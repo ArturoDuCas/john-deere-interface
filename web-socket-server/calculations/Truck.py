@@ -103,7 +103,7 @@ def get_shortest_path(start_row_index, start_column_index):
   if is_terminal_state(start_row_index, start_column_index):
     return []
   else: #if this is a 'legal' starting location
-
+    maxIterations = len(fieldMatrix[0]) * len(fieldMatrix)
     current_row_index, current_column_index = start_row_index, start_column_index
     shortest_path = []
     shortest_path.append([current_row_index, current_column_index])
@@ -114,6 +114,10 @@ def get_shortest_path(start_row_index, start_column_index):
       #move to the next location on the path, and add the new location to the list
       current_row_index, current_column_index = get_next_location(current_row_index, current_column_index, action_index)
       shortest_path.append([current_row_index, current_column_index])
+
+      if len(shortest_path) > maxIterations:
+        return []
+
     return shortest_path
   
 
