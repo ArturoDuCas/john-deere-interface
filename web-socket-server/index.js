@@ -106,7 +106,8 @@ wss.on("connection", (connection, req) => {
       console.log("send-truck-to-silos: ", message);
 
       const { spawn } = require("child_process");
-      const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", ["./calculations/TruckToSilos.py", message.finalPos, message.fieldMatrix, message.truckInitialPos, message.truckId]);
+      // const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", ["./calculations/TruckToSilos.py", message.finalPos, message.fieldMatrix, message.truckInitialPos, message.truckId]);
+      const pythonProcess = spawn("python3", ["./calculations/TruckToSilos.py", message.finalPos, message.fieldMatrix, message.truckInitialPos, message.truckId]);
 
       pythonProcess.stdout.on("data", (data) => {
         const pythonResult = data.toString();
@@ -132,7 +133,7 @@ wss.on("connection", (connection, req) => {
 
       let pythonScript;
       const startingPointsArray = JSON.parse(message.startingPoints);
-      if(startingPointsArray[1] === "[") { // es un string, si inica con doble corchete es una matriz
+      if (startingPointsArray[1] === "[") { // es un string, si inica con doble corchete es una matriz
         console.log("soy una matriz");
         pythonScript = "./calculations/test.py";
       } else { // 1 harvester
@@ -142,7 +143,8 @@ wss.on("connection", (connection, req) => {
 
       // Pass the field_matrix data to the Python script here
       const { spawn } = require("child_process");
-      const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", [pythonScript, message.startingPoints, message.fieldMatrix, message.harvesterId]);
+      // const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", [pythonScript, message.startingPoints, message.fieldMatrix, message.harvesterId]);
+      const pythonProcess = spawn("python3", [pythonScript, message.startingPoints, message.fieldMatrix, message.harvesterId]);
 
       pythonProcess.stdout.on("data", (data) => {
         // Handle the output from the Python script
@@ -202,7 +204,8 @@ wss.on("connection", (connection, req) => {
       console.log("harvester_unload_request: ", message);
       // Pass the field_matrix data to the Python script here
       const { spawn } = require("child_process");
-      const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos, message.trucksIds]);
+      // const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos, message.trucksIds]);
+      const pythonProcess = spawn("python3", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos, message.trucksIds]);
 
       pythonProcess.stdout.on("data", (data) => {
         // Handle the output from the Python script
