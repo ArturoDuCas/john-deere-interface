@@ -213,7 +213,6 @@ const DuringSimulationPage = () => {
         </div>
 
       </form>
-<<<<<<< Updated upstream
       <div className="w-full flex justify-center mt-4" style={texto}>
         <button
           className="bg-[#20720D] text-white p-1 mt-4 mb-20 w-1/2 hover:bg-[#86ab7d]"
@@ -223,10 +222,6 @@ const DuringSimulationPage = () => {
           Inicializar simulacion
         </button>
       </div>
-=======
-      {/* Add the component here, passing gasCapacity as a prop */}
-      <BeforeSimulationPage initialGasCapacity={gasCapacity} />
->>>>>>> Stashed changes
     </div>
 
 

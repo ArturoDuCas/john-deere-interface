@@ -29,7 +29,7 @@ export function AppContextProvider({children}) {
   }
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8081");
+    const ws = new WebSocket("ws://localhost:8082");
     setWs(ws);
     ws.addEventListener("message", handleMessage);
   }, []);

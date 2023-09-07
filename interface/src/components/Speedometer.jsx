@@ -8,7 +8,7 @@ class HarvestingSpeedometer extends Component {
     };
 
     componentDidMount() {
-        this.ws = new WebSocket("ws://localhost:8081");
+        this.ws = new WebSocket("ws://localhost:8082");
       
         this.ws.onmessage = (event) => {
             const message = JSON.parse(event.data);
