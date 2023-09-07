@@ -1,8 +1,8 @@
 
 const { measureMemory } = require("vm");
 const WebSocket = require("ws");
-const wss = new WebSocket.Server({ port: 8082 }, () => {
-  console.log("Server started on port 8082");
+const wss = new WebSocket.Server({ port: 8080 }, () => {
+  console.log("Server started on port 8080");
 });
 
 
@@ -130,24 +130,24 @@ wss.on("connection", (connection, req) => {
     if (message.type === "starting_harvester_data") {
       console.log("starting_harvester_data: ", message);
 
+      let pythonScript;
       const startingPointsArray = JSON.parse(message.startingPoints);
-
-      // Get the length of the array
-      const startingPointsLength = startingPointsArray.length;
-
-      let pythonScript = "./calculations/Harvesters5.py"; // Default script
-      if (startingPointsLength === 2) {
-        pythonScript = "./calculations/DosHarvesters.py"; // Use a different script
+      if(startingPointsArray[1] === "[") { // es un string, si inica con doble corchete es una matriz
+        console.log("soy una matriz");
+        pythonScript = "./calculations/test.py";
+      } else { // 1 harvester
+        pythonScript = "./calculations/Harvester1.py";
       }
+
 
       // Pass the field_matrix data to the Python script here
       const { spawn } = require("child_process");
-      const pythonProcess = spawn("python3", [pythonScript, message.startingPoints, message.fieldMatrix]);
+      const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", [pythonScript, message.startingPoints, message.fieldMatrix, message.harvesterId]);
 
       pythonProcess.stdout.on("data", (data) => {
         // Handle the output from the Python script
         const pythonResult = data.toString();
-        console.log("Python script result:", pythonResult);
+        console.log("Calculate harvester paths result:", pythonResult);
 
         // Send the result to the React component if needed
         sendDataToReactComponent(pythonResult);
