@@ -111,9 +111,9 @@ const DuringSimulationPage = () => {
         <div style={sliderContainerStyles}>
           <Box sx={{ width: 300 }}>
             <Slider
-              min={10}
-              max={100}
-              step={6}
+              min={6}
+              max={20}
+              step={1}
               id="mySlider1"
               value={fieldDimensionsX}
               onChange={(e) => setFieldDimensionsX(e.target.value)}
@@ -127,9 +127,9 @@ const DuringSimulationPage = () => {
         <div style={sliderContainerStyles}>
           <Box sx={{ width: 300 }}>
             <Slider
-              min={10}
-              max={100}
-              step={6}
+              min={6}
+              max={20}
+              step={1}
               id="mySlider2"
               value={fieldDimensionsY}
               onChange={(e) => setFieldDimensionsY(e.target.value)}
