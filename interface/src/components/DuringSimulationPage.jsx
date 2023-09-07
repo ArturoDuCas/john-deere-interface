@@ -12,8 +12,8 @@ const DuringSimulationPage = () => {
   // Use the hook and get the latest data from the WebSocket
   //const { fieldDimensions, gasCapacity, harvesterSpeed } = useWebSocketData(socket);
 
-  const [fieldDimensionsX, setFieldDimensionsX] = useState(50);
-  const [fieldDimensionsY, setFieldDimensionsY] = useState(50);
+  const [fieldDimensionsX, setFieldDimensionsX] = useState(20);
+  const [fieldDimensionsY, setFieldDimensionsY] = useState(20);
   const [gasCapacity, setGasCapacity] = useState(50);
   const [harvesterSpeed, setHarvesterSpeed] = useState(50);
   const [harvesterNumber, setHarvesterNumber] = useState(1);
