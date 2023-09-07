@@ -20,6 +20,8 @@ const DuringSimulationPage = () => {
 
   const { ws, id, unityId } = useContext(AppContext);
 
+  const { setStep } = useContext(AppContext);
+
   // Display the WebSocket data in the component's UI
   const sliderContainerStyles = {
     display: 'flex',
@@ -42,6 +44,10 @@ const DuringSimulationPage = () => {
   };
 
   const maxSliderValue = Math.min(fieldDimensionsY / 6, 10);
+
+  const handleInitializeSimulation = () => {
+    setStep(2);
+  };
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -98,9 +104,6 @@ const DuringSimulationPage = () => {
 
   // Pagina 
   return (
-
-
-
 
     <div>
       <form action="" onSubmit={handleSubmit}>
@@ -203,11 +206,20 @@ const DuringSimulationPage = () => {
 
         <div className="w-full flex justify-center mt-4" style={texto} >
           <button className="bg-[#20720D] text-white p-1 mt-4 mb-20 w-1/2 hover:bg-[#86ab7d]" type="submit">
-            Iniciar simulación
+            Enviar datos
           </button>
         </div>
 
       </form>
+      <div className="w-full flex justify-center mt-4" style={texto}>
+        <button
+          className="bg-[#20720D] text-white p-1 mt-4 mb-20 w-1/2 hover:bg-[#86ab7d]"
+          type="submit"
+          onClick={handleInitializeSimulation}
+        >
+          Inicializar simulacion
+        </button>
+      </div>
     </div>
 
 
