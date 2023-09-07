@@ -60,7 +60,11 @@ def shortest_path(matrix, start, end):
                     
     return float('inf'), []  # Return infinity if no path is found
 
-def tsp(matrix, start_point, index):
+def tsp(matrix, start_points):
+    print("matrix", matrix)
+    print("start_points",start_points)
+    # print("index", index)
+
     """
     Solve the Travelling Salesman Problem for points in the matrix marked by 1's.
     
@@ -87,43 +91,59 @@ def tsp(matrix, start_point, index):
             distance, _ = shortest_path(matrix, points[i], points[j])
             distance_matrix[i][j] = distance_matrix[j][i] = distance
 
-    start_index = index
+    best_distance = float('inf')
+    best_order = []
+    best_path = []
     
-    # Array to keep track of visited points
-    visited = [False] * num_points
-    visited[start_index] = True
-    current_distance = 0
-    order = [start_index]
+    # Try each start point and keep the best result
     
-    # Visit all points
-    while len(order) < num_points:
-        next_point = None
-        min_next_distance = float('inf')
+    for start_point in start_points:
+        if start_point not in points:
+            continue
         
-        # Find the nearest unvisited point
-        for j in range(num_points):
-            if not visited[j] and distance_matrix[order[-1]][j] < min_next_distance:
-                min_next_distance = distance_matrix[order[-1]][j]
-                next_point = j
-        
-        # Update distance and mark point as visited
-        current_distance += min_next_distance
-        visited[next_point] = True
-        order.append(next_point)
-    
-    # Return to the start point to complete the circuit
-    current_distance += distance_matrix[order[-1]][order[0]]
+        print("start_point",start_point)
 
-    min_distance = current_distance
-    best_order = order
+        start_index = points.index(start_point)
+        print("start_index",start_index)
+
+        
+        # Array to keep track of visited points
+        visited = [False] * num_points
+        visited[start_index] = True
+        current_distance = 0
+        order = [start_index]
+        
+        # Visit all points
+        while len(order) < num_points:
+            next_point = None
+            min_next_distance = float('inf')
+            
+            # Find the nearest unvisited point
+            for j in range(num_points):
+                if not visited[j] and distance_matrix[order[-1]][j] < min_next_distance:
+                    min_next_distance = distance_matrix[order[-1]][j]
+                    next_point = j
+            
+            # Update distance and mark point as visited
+            current_distance += min_next_distance
+            visited[next_point] = True
+            order.append(next_point)
+        
+        # Return to the start point to complete the circuit
+        current_distance += distance_matrix[order[-1]][order[0]]
+        
+        if current_distance < best_distance:
+            best_distance = current_distance
+            best_order = order
+            
+            # Reconstruct the full path for this start_point
+            path = [points[best_order[0]]]
+            for i in range(1, len(best_order)):
+                _, sub_path = shortest_path(matrix, points[best_order[i-1]], points[best_order[i]])
+                path += sub_path[1:]
+            best_path = path
     
-    # Reconstruct the full path
-    path = [points[best_order[0]]]
-    for i in range(1, len(best_order)):
-        _, sub_path = shortest_path(matrix, points[best_order[i-1]], points[best_order[i]])
-        path += sub_path[1:]
-    
-    return min_distance, [points[i] for i in best_order], path
+    return best_distance, [points[i] for i in best_order], best_path
 # Additional utility functions and main program are included as in your provided code.
 
 
@@ -210,13 +230,13 @@ def main():
     object_distances = []
 
     # For each object matrix, calculate the TSP path, order and distance
-    for index, (obj_matrix, starting_point_list) in enumerate(zip(object_matrices, new_starting_points)):
-        # Convert the list to a tuple here
-        starting_point = tuple(starting_point_list)
-        dist, order, path = tsp(obj_matrix, starting_point, index)
+    for obj_matrix in object_matrices:
+        dist, order, path = tsp(obj_matrix,new_starting_points)
         object_distances.append(dist)
         object_best_orders.append(order)
         object_paths.append(path)
+
+    print("object_paths",object_paths)
 
     # For each object, calculate the nearest point in every other object's matrix 
     # and update the paths and distances accordingly
