@@ -1,9 +1,3 @@
-import numpy as np
-import heapq
-import random
-import sys
-import json
-
 # -*- coding: utf-8 -*-
 """
 Created on Mon Sep  4 9:53:44 2023
@@ -14,6 +8,8 @@ Created on Mon Sep  4 9:53:44 2023
 import numpy as np
 import heapq
 import random
+import json
+import sys
 # =========================
 # Shortest Path Calculation
 # =========================
@@ -67,12 +63,13 @@ def shortest_path(matrix, start, end):
 
     return float('inf'), []
 
-def tsp(matrix):
+def tsp(matrix, start_point):
     """
     Solve the Travelling Salesman Problem for points in the matrix marked by 1's.
     
     Parameters:
     - matrix: 2D list containing 0's and 1's.
+    - start_point: Tuple of start point (row, column). If not provided, a random choice from the border will be made.
     
     Returns:
     - Minimum total distance to visit all points.
@@ -90,12 +87,20 @@ def tsp(matrix):
     
     min_distance = float('inf')
     best_order = None
-    border_points = [points[i] for i in range(num_points) if 
-                     points[i][0] == 0 or 
-                     points[i][1] == 0 or 
-                     points[i][0] == len(matrix) - 1 or 
-                     points[i][1] == len(matrix[0]) - 1]
-    start_point = random.choice(border_points)
+
+    # Si aucun point de départ n'est fourni, choisissez un point aléatoire de la frontière comme avant
+    if not start_point:
+        border_points = [points[i] for i in range(num_points) if 
+                         points[i][0] == 0 or 
+                         points[i][1] == 0 or 
+                         points[i][0] == len(matrix) - 1 or 
+                         points[i][1] == len(matrix[0]) - 1]
+        start_point = random.choice(border_points)
+    
+    print("points: ", points)
+
+    start_point = tuple(start_point)
+    print("start_point",start_point)
     start_index = points.index(start_point)
     
     visited = [False] * num_points
@@ -129,11 +134,25 @@ def tsp(matrix):
 # Matrix Splitting Functions
 # ==========================
 
-def split_matrix(matrix):
-    mid_col = len(matrix[0]) // 2
-    matrix_left = [row[:mid_col] for row in matrix]
-    matrix_right = [row[mid_col:] for row in matrix]
-    return matrix_left, matrix_right
+def split_matrix(matrix, start_positions):
+
+    left_matrix = []
+    right_matrix = []
+            
+    for i in range(len(matrix)):
+        for j in range(len(matrix[0])):
+            if (i, j) in start_positions:
+                # Include the starting point in the appropriate submatrix
+                if j < len(matrix[0]) // 2:
+                    left_matrix.append([matrix[i][j]])
+                else:
+                    right_matrix.append([matrix[i][j]])
+            elif j < len(matrix[0]) // 2:
+                left_matrix.append([matrix[i][j]])
+            else:
+                right_matrix.append([matrix[i][j]])
+
+    return left_matrix, right_matrix
 
 
 def split_matrix_three(matrix):
@@ -173,31 +192,33 @@ def split_matrix_five(matrix):
 # Main Execution and output
 # ==========================
 
-def compute_path(matrix):
-    min_distance, best_order, path = tsp(matrix)
+# Modify the compute_path function
+def compute_path(matrix, start_position_index, start_positions):
+    start_point = start_positions[start_position_index]
+    min_distance, best_order, path = tsp(matrix, start_point)
     return min_distance, best_order, path
+
 # ==========================
 # Matrix
 # ==========================
 
-matrix = [
-    [1, 1, 0, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-]
- 
+# matrix = [
+#     [1, 1, 0, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+#     [1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+# ]
 
 def main(): 
 
@@ -233,17 +254,17 @@ def main():
         print('Invalid JSON syntax')
 
     NUM_HARVESTERS = len(new_starting_points)
+    start_positions = new_starting_points
 
     if NUM_HARVESTERS == 1:
-        min_distance, best_order, path = compute_path(matrix)
-        print("Harvester Path:", path)
-        # print("Total Distance:", min_distance)
-        # print("Best Order:", best_order)
+        min_distance, best_order, path = compute_path(matrix, 0, start_positions)
+        print(f"Harvester starting from {start_positions[0]} Path:", path)
+
 
     elif NUM_HARVESTERS == 2:
-        matrix_left, matrix_right = split_matrix(matrix)
-        min_distance_left, best_order_left, path_left = compute_path(matrix_left)
-        min_distance_right, best_order_right, path_right = compute_path(matrix_right)
+        matrix_left, matrix_right = split_matrix(matrix, start_positions)
+        min_distance_left, best_order_left, path_left = compute_path(matrix_left,0 ,start_positions)
+        min_distance_right, best_order_right, path_right = compute_path(matrix_right, 1, start_positions)
 
         path_right_offset = [(x, y + len(matrix_left[0])) for x, y in path_right]
 
@@ -262,9 +283,9 @@ def main():
         matrix_left, matrix_middle, matrix_right = split_matrix_three(matrix)
         
         # Calculate paths for the left, middle and right matrix sections.
-        min_distance_left, best_order_left, path_left = compute_path(matrix_left)
-        min_distance_middle, best_order_middle, path_middle = compute_path(matrix_middle)
-        min_distance_right, best_order_right, path_right = compute_path(matrix_right)
+        min_distance_left, best_order_left, path_left = compute_path(matrix_left, 0)
+        min_distance_middle, best_order_middle, path_middle = compute_path(matrix_middle, 1)
+        min_distance_right, best_order_right, path_right = compute_path(matrix_right, 2)
 
         # Adjust for offset if the matrix was split.
         path_middle_offset = [(x, y + len(matrix_left[0])) for x, y in path_middle]
@@ -281,10 +302,10 @@ def main():
     elif NUM_HARVESTERS == 4:
         top_left, top_right, bottom_left, bottom_right = split_matrix_four(matrix)
         
-        min_distance_tl, best_order_tl, path_tl = compute_path(top_left)
-        min_distance_tr, best_order_tr, path_tr = compute_path(top_right)
-        min_distance_bl, best_order_bl, path_bl = compute_path(bottom_left)
-        min_distance_br, best_order_br, path_br = compute_path(bottom_right)
+        min_distance_tl, best_order_tl, path_tl = compute_path(top_left, 0)
+        min_distance_tr, best_order_tr, path_tr = compute_path(top_right, 1)
+        min_distance_bl, best_order_bl, path_bl = compute_path(bottom_left, 2)
+        min_distance_br, best_order_br, path_br = compute_path(bottom_right, 3)
 
         path_tr_offset = [(x, y + len(top_left[0])) for x, y in path_tr]
         path_bl_offset = [(x + len(top_left), y) for x, y in path_bl]
@@ -302,11 +323,11 @@ def main():
     if NUM_HARVESTERS == 5:
         top_left, bottom_left, top_right, middle_right, bottom_right = split_matrix_five(matrix)
         
-        min_distance_tl, best_order_tl, path_tl = compute_path(top_left)
-        min_distance_bl, best_order_bl, path_bl = compute_path(bottom_left)
-        min_distance_tr, best_order_tr, path_tr = compute_path(top_right)
-        min_distance_mr, best_order_mr, path_mr = compute_path(middle_right)
-        min_distance_br, best_order_br, path_br = compute_path(bottom_right)
+        min_distance_tl, best_order_tl, path_tl = compute_path(top_left, 0)
+        min_distance_bl, best_order_bl, path_bl = compute_path(bottom_left,1)
+        min_distance_tr, best_order_tr, path_tr = compute_path(top_right,2)
+        min_distance_mr, best_order_mr, path_mr = compute_path(middle_right, 3)
+        min_distance_br, best_order_br, path_br = compute_path(bottom_right, 4)
 
         path_bl_offset = [(x + len(top_left), y) for x, y in path_bl]
         path_tr_offset = [(x, y + len(top_left[0])) for x, y in path_tr]

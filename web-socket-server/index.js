@@ -120,7 +120,7 @@ wss.on("connection", (connection, req) => {
         };
 
         connection.send(JSON.stringify(message));
-        });
+      });
 
       pythonProcess.stderr.on("data", (data) => {
         console.error(`Error from Python script: ${data}`);
@@ -130,9 +130,19 @@ wss.on("connection", (connection, req) => {
     if (message.type === "starting_harvester_data") {
       console.log("starting_harvester_data: ", message);
 
+      const startingPointsArray = JSON.parse(message.startingPoints);
+
+      // Get the length of the array
+      const startingPointsLength = startingPointsArray.length;
+
+      let pythonScript = "./calculations/Harvesters5.py"; // Default script
+      if (startingPointsLength === 2) {
+        pythonScript = "./calculations/DosHarvesters.py"; // Use a different script
+      }
+
       // Pass the field_matrix data to the Python script here
       const { spawn } = require("child_process");
-      const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", ["./calculations/Harvesters5.py", message.startingPoints, message.fieldMatrix]);
+      const pythonProcess = spawn("python3", [pythonScript, message.startingPoints, message.fieldMatrix]);
 
       pythonProcess.stdout.on("data", (data) => {
         // Handle the output from the Python script
