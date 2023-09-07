@@ -3,6 +3,10 @@ import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 class HarvestingSpeedometer extends Component {
+    state = {
+        value: this.props.initialGasCapacity || 0
+    };
+
     componentDidMount() {
         this.ws = new WebSocket("ws://localhost:8081");
       
@@ -22,9 +26,9 @@ class HarvestingSpeedometer extends Component {
         this.ws.close();
     }
 
-    state = {
+    /*state = {
         value: 0
-    };
+    };*/
 
     render() {
         const radius = 150; // Same as the gauge

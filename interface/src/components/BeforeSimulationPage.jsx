@@ -12,7 +12,7 @@ export default function BeforeSimulationPage() {
       <div className="w-full bg-cover flex items-center justify-center h-screen">
           <div className="flex flex-col justify-center items-center space-y-4">
               <HarvestingLoad />
-              <Speedometer />
+              <Speedometer initialGasCapacity={initialGasCapacity} /> {/* Pass the prop here */}
           </div>
           {/* Other column content, if any */}
       </div>
