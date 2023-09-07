@@ -5,6 +5,7 @@ import json
 
 try:
     harvester_ID = sys.argv[1]
+    harvester_ID = json.loads(harvester_ID)
     print(harvester_ID)
 
     final_Pos = sys.argv[2]
@@ -19,6 +20,7 @@ try:
     trucksIds = sys.argv[5]
     trucksIds = json.loads(trucksIds)
     print(trucksIds)
+
 
 except json.JSONDecodeError:
     print('Invalid JSON syntax')

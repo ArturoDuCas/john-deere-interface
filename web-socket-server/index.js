@@ -1,8 +1,8 @@
 
 const { measureMemory } = require("vm");
 const WebSocket = require("ws");
-const wss = new WebSocket.Server({ port: 8081 }, () => {
-  console.log("Server started on port 8081");
+const wss = new WebSocket.Server({ port: 8080 }, () => {
+  console.log("Server started on port 8080");
 });
 
 
@@ -132,7 +132,7 @@ wss.on("connection", (connection, req) => {
 
       // Pass the field_matrix data to the Python script here
       const { spawn } = require("child_process");
-      const pythonProcess = spawn("python3", ["./calculations/Harvesters5.py", message.startingPoints, message.fieldMatrix]);
+      const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", ["./calculations/Harvesters5.py", message.startingPoints, message.fieldMatrix]);
 
       pythonProcess.stdout.on("data", (data) => {
         // Handle the output from the Python script
@@ -189,9 +189,10 @@ wss.on("connection", (connection, req) => {
 
 
     if (message.type === "harvester_unload_request") {
+      console.log("harvester_unload_request: ", message);
       // Pass the field_matrix data to the Python script here
       const { spawn } = require("child_process");
-      const pythonProcess = spawn("python3", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos]);
+      const pythonProcess = spawn("C:\\Users\\Arturo\\AppData\\Local\\Programs\\Python\\Python311\\python.exe", ["./calculations/Truck.py", message.harvesterId, message.finalPos, message.fieldMatrix, message.trucksInitialPos, message.trucksIds]);
 
       pythonProcess.stdout.on("data", (data) => {
         // Handle the output from the Python script
@@ -200,6 +201,15 @@ wss.on("connection", (connection, req) => {
 
         // Send the result to the React component if needed
         sendDataToReactComponent(pythonResult);
+
+        const message = {
+          type: "truck_python",
+          sender: "server",
+          receiver: connection.id,
+          data: pythonResult
+        };
+
+        connection.send(JSON.stringify(message));
 
       });
 
